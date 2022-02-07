@@ -4,10 +4,10 @@ require "assets.script"
 -- Create Propertys
 go.property("spawner_num", 0)
 go.property("id", 0)
-local enemy_num_self = enemy_num[self.spawner_num]
-
+local enemy_num_self
 function init(self)
 	msg.post(".", "acquire_input_focus")
+	enemy_num_self = enemy_num[self.spawner_num]
 	fighting[enemy_num_self] = false
 	animating_start[enemy_num_self] = false
 	-- Set Sprite
@@ -27,8 +27,8 @@ function update(self, dt)
 	end
 	if fighting[enemy_num_self] == true and animating_start[enemy_num_self] == false then
 		animating_start[enemy_num_self] = false
-		go.animate(".", "Position", go.PLAYBACK_ONCE, min_direction, go.EASING_LINEAR, 0.5, 0, final_animate)
-		go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
+		-- go.animate(".", "Position", go.PLAYBACK_ONCE, min_direction, go.EASING_LINEAR, 0.5, 0, final_animate)
+		-- go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
 	end
 	-- Change Opactiy
 	if vmath.length(go.get_position("/player") - go.get_position()) < 500 then
@@ -42,9 +42,9 @@ function update(self, dt)
 	end
 end
 
-function final_animate()
-	go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
-end
+-- function final_animate()
+-- 	go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
+-- end
 function on_message(self, message_id, message, sender)
 	-- Delete enemy
 	if message_id == hash("disable") then
