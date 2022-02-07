@@ -28,10 +28,6 @@ jobs:
         id: setup_defold
         with:
           path: .defold2
-      - env:
-        BOB_VERSION: ${{ steps.setup_defold.outputs.version }}
-        BOB_SHA1: ${{ steps.setup_defold.outputs.sha1 }}
-        DEFOLD_PATH: ${{ steps.setup_defold.outputs.path }}
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
@@ -51,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: TSA-Game
-          path: /defold
+          path: .defold2
   # macOS is not technically needed for building, but we want to test bundling as well, since we're also testing the manifest merging
   build_with_bob_macos:
     strategy:
