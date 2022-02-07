@@ -1,83 +1,26 @@
-name: Build with bob
-
-on:
-  push:
-  pull_request_target:
-  schedule:
-    # nightly at 05:00 on the 1st and 15th
-    - cron: 0 5 1,15 * *
-
-env:
-  VERSION_FILENAME: 'info.json'
-  BUILD_SERVER: 'https://build.defold.com'
+name: Test
+on: [push]
 
 jobs:
-  build_with_bob:
-    strategy:
-      matrix:
-        platform: [armv7-android, x86_64-linux, x86_64-win32, x86-win32, js-web]
+  build:
     runs-on: ubuntu-latest
-
-    name: Build
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.2'
-      - uses: './'
-        id: setup_defold
-        with:
-          path: .defold2
-      - name: Get Defold version
-        run: |
-          TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
-          echo "DEFOLD_VERSION=${TMPVAR}" >> $GITHUB_ENV
-          echo "Found version ${TMPVAR}"
-      - name: Download bob.jar
-        run: |
-          wget -q http://d.defold.com/archive/stable/${{env.DEFOLD_VERSION}}/bob/bob.jar
-          java -jar bob.jar --version
-      - name: Resolve libraries
-        run: java -jar bob.jar resolve --email a@b.com --auth 123456
-      - name: Build
-        run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
-      - name: Bundle
-        run: java -jar bob.jar --platform=${{ matrix.platform }} bundle
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: TSA-Game
-          path: .defold2
-  # macOS is not technically needed for building, but we want to test bundling as well, since we're also testing the manifest merging
-  build_with_bob_macos:
-    strategy:
-      matrix:
-        platform: [armv7-darwin, x86_64-darwin]
-    runs-on: macOS-latest
-
-    name: Build
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '11.0.2'
-      - name: Get Defold version
-        run: |
-          TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
-          echo "DEFOLD_VERSION=${TMPVAR}" >> $GITHUB_ENV
-          echo "Found version ${TMPVAR}"
-      - name: Download bob.jar
-        run: |
-          wget -q http://d.defold.com/archive/stable/${{env.DEFOLD_VERSION}}/bob/bob.jar
-          java -jar bob.jar --version
-      - name: Resolve libraries
-        run: java -jar bob.jar resolve --email a@b.com --auth 123456
-      - name: Build
-        run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
-      - name: Bundle
-        run: java -jar bob.jar --platform=${{ matrix.platform }} bundle
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: TSA-Game
-          path: .defold
+    - uses: actions/checkout@v2
+    - uses: './'
+      id: setup_defold
+      with:
+        path: .defold2
+    - uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+    - env:
+        BOB_VERSION: ${{ steps.setup_defold.outputs.version }}
+        BOB_SHA1: ${{ steps.setup_defold.outputs.sha1 }}
+        DEFOLD_PATH: ${{ steps.setup_defold.outputs.path }}
+      run: |
+        echo $BOB_VERSION $BOB_SHA1 > versions
+        cat versions
+        echo "Bob installed in: $BOB"
+        java -jar $BOB --version | tee bob_versions && \
+        cat bob_versions | sed 's/.*version: \([^ ]*\).*sha1: \([^ ]*\).*/\1 \2/' | cmp - versions && \
+        test -x "$DEFOLD_PATH/dmengine_headless"
