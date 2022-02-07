@@ -15,7 +15,7 @@ jobs:
   build_with_bob:
     strategy:
       matrix:
-        platform: [x86_64-linux, x86_64-win32, x86-win32, js-web]
+        platform: [armv7-android, x86_64-linux, x86_64-win32, x86-win32, js-web]
     runs-on: ubuntu-latest
 
     name: Build
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.2'
-
+          path: .github
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.2'
-
+          path: .github
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
