@@ -1,0 +1,40 @@
+local move = false
+SPEED = 400
+local check = false
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.velocity = go.get_position("/player") - go.get_position()
+	if vmath.length(self.velocity) > 0 then
+		self.velocity = vmath.normalize(self.velocity)
+	end
+end
+
+
+function update(self, dt)
+	-- update position
+	local screen_pos = camera.world_to_screen(camera_id, go.get_position())
+
+	if screen_pos.x < 0 or screen_pos.x > 1280 or screen_pos.y < 0 or screen_pos.y > 720 then
+		go.delete()
+	end
+
+	local new_position = go.get_position() + self.velocity * SPEED * dt
+	new_position.z = 1
+	go.set_position(new_position)
+	-- timer
+end
+
+function on_message(self, message_id, message, sender)
+	if message.other_group == hash("player_top") or message.other_group == hash("player_bottom") then
+		go.delete()
+		check = true
+
+	end
+end
+
+function final(self)
+	if check then
+		HP = HP-20
+		check = false
+	end
+end

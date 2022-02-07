@@ -1,0 +1,75 @@
+local printer = require("printer.printer")
+local styles = require("guis.styles")
+
+function init(self)
+
+	-- Disable GUI
+	msg.post("#", "disable")
+	msg.post(".", "acquire_input_focus")
+
+	-- Create printer
+	printer.add_styles(styles)
+	printer.play_sound = function(name)
+		sound.play("/sounds#text")
+	end
+	self.printer = printer.new(self, "example")
+	fight_printer = self.printer
+end
+
+
+function update(self, dt)
+
+	-- Update printer
+	if self.printer ~= nil then
+		self.printer:update(dt)
+	end
+end
+
+
+function on_input(self, action_id, action)
+
+	-- If space is pressed
+	if action_id == hash("space") and action.pressed then
+
+		-- Text instantly appears
+		if self.printer.is_print then
+			self.printer:instant_appear()
+
+		-- If spare text has been shown. Cancel fight
+
+		elseif final_sender == 2 then
+			msg.post("/fight#fight", "end_fight_final")
+			final_sender = nil
+			msg.post("#","disable")
+
+		-- If spare text has not been shown. Show spare text
+		elseif final_sender ~= nil then
+			self.printer:print(text[spare[enemy_num[enemy]]])
+			final_sender = 2
+
+		-- Disable textbox
+		else
+			msg.post("#", "disable")
+		end
+	end
+end
+
+
+function on_message(self, message_id, message, sender)
+
+	-- Print Message
+	if message_id == hash("printtext") then
+		self.printer:print(text[message.line])
+		msg.post("#", "enable")
+
+ 	-- Print final message
+	elseif message_id == hash("printtext_final") then
+		self.printer:print(text[message.line])
+		msg.post("#", "enable")
+		final_sender = sender
+
+	-- Remove Text Box
+	elseif message_id == hash("remove_text") then
+		msg.post("#", "disable")
+	end
+end

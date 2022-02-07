@@ -1,0 +1,267 @@
+
+
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+	-- Reset Variables
+	fight = false
+	act = false
+	current_button = "item"
+	
+	-- Disable nodes
+	gui.set_enabled(gui.get_node("flicker"), false)
+	gui.set_enabled(gui.get_node("act"), false)
+	
+end
+
+
+function on_message(self, message_id, message, sender)
+	
+	-- Enable Fight
+	if message_id == hash("enable_fight") then
+		enemy_type = enemy_num[enemy]
+		gui.set_text(gui.get_node("text_2"), text[text_2[enemy_type]])
+		gui.set_text(gui.get_node("text_3"), text[text_3[enemy_type]])
+		current_button = "item"
+		fight = true
+		x= 320
+		y= 180
+		loop = 0
+		flicker_loop = 0
+		flicker_enabled = false
+		timer.delay(0.2, true, flicker)
+
+	--Disable Fight
+	elseif message_id == hash("disable_fight") then
+		
+		if fight then
+			gui.animate(gui.get_node("box"),"scale",vmath.vector3(1,1,1),gui.EASING_LINEAR, 0.4)
+			gui.animate(gui.get_node("bottom"), "position", vmath.vector3(0,-510,0), gui.EASING_LINEAR, 0.4)
+			sound.stop("/sounds#e")
+			camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})	
+			camera.deadzone(camera_id, 320, 180, 320, 180)
+			msg.post("/printer", "remove_text")
+			camera.set_zoom(camera_id, 1)
+			timer.delay(0.4, false, function() fight = false act = false end)
+		end
+
+	-- Broadcast final fight messages
+	elseif message_id == hash("end_fight_final") then
+		msg.post("#", "disable_fight")
+		msg.post("/instance" .. enemy-1 , "disable")
+		enemy_disabled[enemy_type] = true
+	end
+end
+
+
+function flicker(self, handle, time_elapsed)
+	gui.set_enabled(gui.get_node("talk"), false)
+	gui.set_enabled(gui.get_node("item"), false)
+	
+	-- Fight Flicker
+	if flicker_loop < 6 then
+		flicker_loop = flicker_loop+1
+		
+		if flicker_enabled then
+			flicker_enabled = false
+			gui.set_enabled(gui.get_node("flicker"), false)
+
+		elseif flicker_enabled == false then
+			sound.play("/sounds#fight_sound")
+			flicker_enabled=true
+			gui.set_enabled(gui.get_node("flicker"), true)
+			if flicker_loop == 1 then
+				camera.set_zoom(camera_id, camera_zoom["Prototype"])
+				camera.follow(camera_id, "/backend", {offset = vmath.vector3(0,0,0)})
+				camera.deadzone(camera_id, 214, 120, 214, 120)
+				gui.set_scale(gui.get_node("box"),vmath.vector3(0.9,0.9,0))
+				gui.set_position(gui.get_node("bottom"), vmath.vector3(0,-467,0))
+				
+			elseif flicker_loop == 3 then
+				camera.deadzone(camera_id, 107, 60, 107, 60)
+				gui.set_scale(gui.get_node("box"),vmath.vector3(0.8,0.8,0))
+				gui.set_position(gui.get_node("bottom"), vmath.vector3(0,-424,0))
+				
+			elseif flicker_loop == 5 then
+				camera.deadzone(camera_id, 0, 0, 0, 0)
+				gui.set_scale(gui.get_node("box"),vmath.vector3(0.7,0.7,0))
+				gui.set_position(gui.get_node("bottom"), vmath.vector3(0,-380,0))
+			end
+		end
+		
+	else
+		sound.play("/sounds#e")
+		timer.cancel(handle)
+		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type]})
+	end
+end
+
+
+-- Buttons
+function update(self, dt)
+
+	-- Show selected button
+	if current_button == "item" then
+		gui.set_color(gui.get_node("item"), vmath.vector4(1,0,0,1))
+		gui.set_color(gui.get_node("talk"), vmath.vector4(1,0,0,0.5))
+	
+	else
+		gui.set_color(gui.get_node("item"), vmath.vector4(1,0,0,0.5))
+		gui.set_color(gui.get_node("talk"), vmath.vector4(1,0,0,1))
+	end
+
+	-- Show selected action
+	if act then
+		gui.set_color(gui.get_node(current_button), vmath.vector4(1,1,1,1))
+		gui.set_color(gui.get_node(act_unselected[1]), vmath.vector4(0.4,0.4,0.4,1))
+		gui.set_color(gui.get_node(act_unselected[2]), vmath.vector4(0.4,0.4,0.4,1))
+		
+	-- Disable text 
+	else
+		gui.set_enabled(gui.get_node("talk"), true)
+		gui.set_enabled(gui.get_node("item"), true)
+		gui.set_enabled(gui.get_node("act"), false)
+	end
+
+	
+	if fight_printer.is_print == false and final_sender == nil then
+		act_text = false
+		
+		if act then
+			gui.set_enabled(gui.get_node("act"), true)
+		else
+			gui.set_enabled(gui.get_node("talk"), true)
+			gui.set_enabled(gui.get_node("item"), true)
+		end
+	
+	else
+		act_text = true
+		gui.set_enabled(gui.get_node("act"), false)
+		gui.set_enabled(gui.get_node("talk"), false)
+		gui.set_enabled(gui.get_node("item"), false)
+	end
+end
+
+function on_input(self, action_id, action)
+	if fight_printer.is_print == false and final_sender == nil then
+		-- If button pressed
+		if action.pressed then
+
+			-- If fight is in progress
+			if fight then
+
+				--If not in act menu
+				if act == false then
+
+					-- If button was left
+					if action_id == hash("select_left") then
+
+						-- Change to item button
+						current_button = "item"
+						sound.play("/sounds#select")
+
+					-- If button was right
+					elseif action_id == hash("select_right") then
+
+						-- Change to talk button
+						current_button = "talk"
+						sound.play("/sounds#select")
+
+					--If button was enter
+					elseif action_id == hash("select_enter") then
+
+						-- If talk button selected
+						if current_button == "talk" then
+
+							-- Open act menu
+							sound.play("/sounds#select")
+							gui.set_enabled(gui.get_node("talk"), false)
+							gui.set_enabled(gui.get_node("item"), false)
+							gui.set_enabled(gui.get_node("act"), true)
+							act = true
+							current_button = "text_1"
+							act_unselected = {"text_2","text_3"}
+						end
+					end
+
+				-- If in act menu
+				elseif act then
+
+					-- If button was up
+					if action_id == hash("select_up") then
+
+						-- Move selection up
+						sound.play("/sounds#select")
+						
+						if current_button == "text_2" then
+							current_button = "text_1"
+							act_unselected = {"text_2","text_3"}
+							
+						elseif current_button == "text_3" then
+							current_button = "text_2"
+							act_unselected = {"text_1","text_3"}
+						end
+
+					-- If button was down
+					elseif action_id == hash("select_down") then
+
+						-- Move selection down
+						sound.play("/sounds#select")
+						
+						if current_button == "text_2" then
+							current_button = "text_3"
+							act_unselected = {"text_2","text_1"}
+						elseif current_button == "text_1" then
+							
+							current_button = "text_2"
+							act_unselected = {"text_1","text_3"}
+						end
+
+					-- If selection was enter
+					elseif action_id == hash("select_enter") then
+
+						-- If text_1 is selected
+						if current_button == "text_1" then
+							
+							sound.play("/sounds#select")
+							msg.post("/printer#printer_example", "printtext", {line = stats[enemy_type]})
+						end
+
+						-- If text_2 is selected
+						if current_button == "text_2" then
+							sound.play("/sounds#select")
+							
+							if spare_text[enemy_type] == 2 then
+								msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type]})
+								
+							else
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type]})
+							end
+						end
+
+						-- If text_3 is selected
+						if current_button == "text_3" then
+							sound.play("/sounds#select")
+							
+							if spare_text[enemy_type] == 3 then
+								msg.post("/printer#printer_example", "printtext_final", {line = text_3_options[enemy_type]})
+								
+							else
+								msg.post("/printer#printer_example", "printtext", {line = text_3_options[enemy_type]})
+							end
+						end
+
+						
+
+					-- If escaping menu
+					elseif action_id == hash("esc") then
+						sound.play("/sounds#select")
+						act = false
+						current_button = "act"
+					end
+				end
+			end
+		end
+	end
+end

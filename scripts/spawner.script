@@ -1,0 +1,6 @@
+function init(self)
+	timer.delay(1, true, ea)
+end
+function ea()
+	factory.create("/go#projectile")
+end

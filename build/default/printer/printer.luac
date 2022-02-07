@@ -1,0 +1,774 @@
+
+ñˆ
+˘]--[[
+	Defold Printer Module
+	Author: Insality
+
+	require "printer.printer"
+
+	node must contains prefab (text) and text_parent
+	pritner see on text_parent size to placing letters. See template in module folder
+
+	Usage:
+	self.printer = printer.new(self, template_name)
+
+	in update:
+		self.printer:update(dt)
+	if final
+		self.printer:final()
+
+	to write text:
+		self.printer:print("string {stylename}next string")
+		return true, if string will writing
+		return false, if prev. string is writing and instant complete them
+
+	to see if printer is print now:
+		self.printer.is_print
+
+	to instant complete current print manual:
+		self.printer:instant_appear()
+
+	New styles you can add with printer.add_styles({styles})
+
+	Print usage:
+	self.printer:print("This is {red}test with red style")
+	self.printer:print("This is {amazing}multi-{blue}styled text")
+	self.printer:print("This is text with{n}new line. And image here {image:coins}")
+	self.printer:print("This is {red}red text and {/}return to default")
+	self.printer:print("This is with source to use another default style", "Illidan")
+
+	Full documentation read at:
+	https://github.com/Insality/defold-printer/blob/master/README.md
+--]]
+
+local colors = require("printer.colors")
+local utf8 = require("printer.utf8string")
+local custom_regex = require("printer.regex")
+
+local contains = function(t, value)
+	for i = 1, #t do
+		if t[i] == value then
+			return i
+		end
+	end
+	return false
+end
+
+local split = function(inputstr, sep)
+    sep = sep or "%s"
+    local t = {}
+    local i = 1
+    for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+            t[i] = str
+            i = i + 1
+    end
+    return t
+end
+
+local M = {}
+M.printers = {}
+
+
+local styles = {
+	default = {
+		font_height = 28,
+		spacing = 1, -- pixels between letters
+		scale = 1, -- scale of character
+		waving = false, -- if true - do waving by sinus
+		color = "#FFFFFF",
+		speed = 0.05,
+		appear = 0.01,
+		shaking = 0, -- shaking power. Set to 0 to disable
+		sound = false,
+		can_skip = true,
+		shake_on_write = 0, -- when letter appear, shake dialogue screen
+	}
+}
+local word_styles = {}
+local source_styles = {}
+
+
+local temp_pos = vmath.vector3()
+local function update_shake(self, dt)
+	self.shake_time = self.shake_time - dt
+
+	if self.shake_time < 0 then
+		self.shake_power = 0
+		gui.set_position(self.node_parent, self.node_parent_pos)
+	else
+		temp_pos.x = self.node_parent_pos.x + (math.random() * self.shake_power * 2 - self.shake_power)
+		temp_pos.y = self.node_parent_pos.y + (math.random() * self.shake_power * 2 - self.shake_power)
+		gui.set_position(self.node_parent, temp_pos)
+	end
+end
+
+
+local function get_style(self, name)
+	if name == "/" or name == "default" or name == nil then
+		if self.default_style == "default" then
+			return styles.default
+		else
+			name = self.default_style
+		end
+	end
+
+	local style = {}
+	for k, v in pairs(styles.default) do
+		style[k] = v
+	end
+
+	if styles[name] then
+		for k, v in pairs(styles[name]) do
+			style[k] = v
+		end
+	else
+		print("[Printer]: No style name " .. name)
+	end
+
+	return style
+end
+
+
+local function set_shake(self, power, time)
+	self.shake_time = time
+	self.shake_power = power
+end
+
+
+local function get_letter_size(node_data)
+	local size
+	if node_data.is_icon then
+		size = gui.get_size(node_data.node)
+		-- dirty hack
+		size = {width = size.x, height = size.y}
+	else
+		size = gui.get_text_metrics_from_node(node_data.node)
+	end
+	local scale = gui.get_scale(node_data.node)
+
+	if size.width == 0 then
+		-- possibly whitespace
+		size.width = size.max_ascent/2
+		size.height = size.max_ascent/2
+	end
+
+	size.width = size.width * scale.x
+	size.height = size.height * scale.y
+
+	return size
+end
+
+
+local function get_word_size(word)
+	local result = 0
+	for i in pairs(word) do
+		local nodeData = word[i]
+		local size = get_letter_size(nodeData)
+		result = result + size.width
+
+		if i ~= #word then
+			result = result + nodeData.style.spacing
+		end
+	end
+
+	return result
+end
+
+
+local function check_new_line(self, word)
+	local word_size = get_word_size(word)
+
+	if self.prev_node then
+		local last_pos = gui.get_position(self.prev_node.node)
+		if last_pos.x + word_size >= self.parent_size.x/2 then
+			self.new_row = true
+		end
+	else
+		self.new_row = false
+	end
+end
+
+
+local function update_letter_pos(self, node_data)
+	local is_new_row = false
+	local is_node_new_row = contains(self.new_line_nodes, node_data.node)
+
+	if self.new_row or is_node_new_row then
+		is_new_row = true
+		self.new_row = false
+		self.current_row = self.current_row + 1
+	end
+
+	local style = node_data.style
+	local pos = vmath.vector3()
+
+	if not self.prev_node or is_new_row then
+		-- first symbol
+		pos.x = -self.parent_size.x/2
+		pos.y = self.parent_size.y/2 - (self.current_row-1) * style.font_height - style.font_height/2
+	else
+		local prev_pos = gui.get_position(self.prev_node.node)
+		local prev_size = get_letter_size(self.prev_node)
+		pos.x = prev_pos.x + prev_size.width  + self.prev_node.style.spacing
+		pos.y = prev_pos.y
+	end
+
+	gui.set_position(node_data.node, pos)
+	self.prev_node = node_data
+end
+
+
+local function set_word_pos(self, word)
+	for i in pairs(word) do
+		update_letter_pos(self, word[i])
+	end
+end
+
+
+local invisible = vmath.vector4(1, 1, 1, 0)
+local function get_symbol(self, text, stylename)
+	local is_icon = false
+	local node
+
+	local splited = split(stylename, ":")
+	if #splited == 2 and splited[1] == "image" then
+		-- icon create
+		is_icon = true
+		stylename = "default"
+		node = gui.clone(self.prefab_icon)
+		gui.play_flipbook(node, splited[2])
+	else
+		node = gui.clone(self.prefab)
+		gui.set_text(node, text)
+	end
+	local node_data = {node = node, style = get_style(self, stylename), text = text, is_icon = is_icon}
+	gui.set_enabled(node, true)
+	gui.set_parent(node, self.node_parent)
+	gui.set_color(node, invisible)
+	table.insert(self.current_letters, node_data)
+
+	return node_data
+end
+
+
+local function create_symbol(self, text, stylename)
+	local node_data = get_symbol(self, text, stylename)
+
+	local node = node_data.node
+	local style = node_data.style
+
+	if style.scale ~= 1 then
+		gui.set_scale(node, vmath.vector4(style.scale))
+	end
+
+	local last_word = self.current_words[#self.current_words]
+	table.insert(last_word, node_data)
+	if text == " " then
+		table.insert(self.current_words, {})
+	end
+
+	return node_data
+end
+
+
+local function clear_prev_text(self)
+	if self.current_letters then
+		for i = 1, #self.current_letters do
+			gui.delete_node(self.current_letters[i].node)
+		end
+	end
+	self.current_letters = {}
+	self.last_pos = false
+	self.current_words = {{}}
+	self.new_line_nodes = {}
+end
+
+
+local function modify_text(text)
+	for k, v in pairs(word_styles) do
+		text = custom_regex.replace_all_with_style(text, k, v)
+	end
+	return text
+end
+
+
+local function precreate_text(self)
+	while #self.string > 0 do
+		local uobj = utf8(self.string)
+		local sym = tostring(uobj:sub(1, 1))
+		if sym == "{" then
+			local close_index = string.find(tostring(self.string), "}")
+			local prev_style = self.stylename
+			self.stylename = tostring(uobj:sub(2, close_index-1))
+			if self.stylename == "n" then
+				-- insert codename word -new-line-
+				self.next_node_new_line = true
+				self.stylename = prev_style
+			end
+			self.string = uobj:sub(close_index+1, #uobj)
+
+			-- if style contains ":" - make whitespace next or it to write it
+			-- For now use special for images
+			if self.stylename:find(":") then
+				self.string = " " .. self.string
+			end
+
+		else
+			local node_data = create_symbol(self, sym, self.stylename)
+			if node_data.is_icon then
+				self.stylename = "default"
+			end
+			self.string = uobj:sub(2, #uobj)
+
+			if self.next_node_new_line and sym ~= " " then
+				self.next_node_new_line = false
+				table.insert(self.new_line_nodes, node_data.node)
+			end
+		end
+	end
+end
+
+
+local function update_text_pos(self)
+	for i in pairs(self.current_words) do
+		local word = self.current_words[i]
+
+		check_new_line(self,word)
+		set_word_pos(self, word)
+	end
+end
+
+
+local function appear_node(self, node_data, is_instant)
+	local style = node_data.style
+	local node = node_data.node
+
+	if node_data.text ~= " " and not is_instant and style.sound then
+		M.play_sound(style.sound)
+	end
+
+	local color = colors.hex2rgba(style.color)
+	if node_data.is_icon then
+		color = vmath.vector4(1)
+	end
+	if style.appear > 0 and not is_instant then
+		color.w = 0
+		gui.set_color(node, color)
+		color.w = 1
+		gui.animate(node, gui.PROP_COLOR, color, gui.EASING_OUTSINE, style.appear)
+	else
+		gui.set_color(node, color)
+	end
+
+	if style.waving then
+		local pos = gui.get_position(node)
+		pos.y = pos.y + 2
+		gui.set_position(node, pos)
+		gui.animate(node, "position.y", pos.y-4, gui.EASING_INOUTSINE, 1, 0, nil, gui.PLAYBACK_LOOP_PINGPONG)
+	end
+
+	if style.shaking > 0 then
+		local pos = gui.get_position(node)
+
+		local next_shake
+		next_shake = function()
+			temp_pos.x = pos.x + (math.random() * style.shaking * 2 - style.shaking)
+			temp_pos.y = pos.y + (math.random() * style.shaking * 2 - style.shaking)
+			gui.animate(node, "position", temp_pos, gui.EASING_OUTSINE, 0.0175, 0.04, next_shake)
+		end
+
+		next_shake()
+	end
+
+	if style.shake_on_write > 0 then
+		set_shake(self, style.shake_on_write, 0.05)
+	end
+end
+
+
+local function print_next(self)
+	local node_data = self.current_letters[self.current_index]
+
+	appear_node(self, node_data)
+	self.current_index = self.current_index + 1
+
+	local next_data = self.current_letters[self.current_index]
+	if next_data then
+		self.write_timer = math.max(next_data.style.speed, node_data.style.speed)
+		if node_data.text == "," then
+			self.write_timer = math.min(self.write_timer * 3, 0.3)
+		end
+		if node_data.text == "." then
+			self.write_timer = math.min(self.write_timer * 5, 0.5)
+		end
+		if node_data.text == " " then
+			self.write_timer = 0
+		end
+	else
+		self.is_print = false
+	end
+end
+
+
+local function appear_text(self)
+	self.current_index = 1
+	if #self.current_letters > 0 then
+		self.is_print = true
+		print_next(self)
+	end
+end
+
+
+local function init(self, node)
+	self.prefab = gui.get_node(node .. "/prefab")
+	self.prefab_icon = gui.get_node(node .. "/prefab_icon")
+	self.node_parent = gui.get_node(node .. "/text_parent")
+	self.shake_time = 0
+	self.shake_power = 0
+	self.write_timer = 0
+
+	self.node_parent_pos = gui.get_position(self.node_parent)
+	self.parent_size = gui.get_size(self.node_parent)
+
+	gui.set_enabled(self.prefab, false)
+	gui.set_enabled(self.prefab_icon, false)
+
+	clear_prev_text(self)
+end
+
+--== PUBLIC FUNCTIONS ==--
+
+function M.instant_appear(self)
+	local current_letter = self.current_letters[self.current_index]
+
+	if self.is_print and current_letter.style.can_skip then
+		self.is_print = false
+		for i in pairs(self.current_letters) do
+			appear_node(self, self.current_letters[i], true)
+		end
+	end
+end
+
+
+function M.print(self, str, source)
+	if self.is_print then
+		self:instant_appear()
+		return false
+	else
+		self.current_row = 1
+		self.new_row = false
+		self.stylename = source_styles[source] or "default"
+		self.default_style = self.stylename
+		self.prev_node = false
+		clear_prev_text(self)
+		self.string = str
+
+		-- precreate -> posing -> start showing
+		self.string = modify_text(self.string)
+		precreate_text(self)
+		update_text_pos(self)
+		appear_text(self)
+		return true
+	end
+end
+
+
+function M.new(self, template_name)
+	local printer = setmetatable({}, {__index = M})
+	printer.parent = self
+	init(printer, template_name)
+	return printer
+end
+
+
+function M.clear(self)
+	clear_prev_text(self)
+end
+
+
+function M.update(self, dt)
+	if self.is_print then
+		self.write_timer = self.write_timer - dt
+		if self.write_timer <= 0 then
+			print_next(self)
+		end
+	end
+
+	if self.shake_time > 0 then
+		update_shake(self, dt)
+	end
+end
+
+
+function M.final(self)
+	clear_prev_text(self)
+	self.is_print = false
+	self.shake_time = -1
+end
+
+
+function M.play_sound(name)
+	-- rewrite
+end
+
+
+function M.add_styles(styles_new)
+	for k, v in pairs(styles_new) do
+		styles[k] = v
+	end
+end
+
+
+function M.add_source_style(source, style)
+	source_styles[source] = style
+end
+
+
+function M.add_word_style(word, style)
+	word_styles[word] = style
+end
+
+
+return M/printer/printer.luaˇKLJ @/printer/printer.lua[    %.)   ) MÄ8  XÄL O˚+ L t  value    i  ¨ 
+ <7	  XÄ'  4  ) 6 9  '  ' &BXÄ< ER¸L ]+)([^gmatchstring%sinputstr  sep  t i   str  ‚ 
+/EZ9  !=  9  )   XÄ)  = 6 99 9 BXÄ-  9 96 9B9 " 9 ! =-  9 9	6 9B9 " 9 ! =	6 99 -  BK  	¿yrandom	mathxnode_parent_posnode_parentset_positionguishake_powershake_time					temp_pos self  0dt  0 ‹ 	 *jh  XÄ XÄ  XÄ9  XÄ-  9L XÄ9 4  6 -  9BHÄ<FR˝-  8  X	Ä6 -  8BHÄ<FR˝XÄ6 '  &BL ¿[Printer]: No style name 
+print
+pairsdefault_styledefault/	
+
+
+
+
+
+
+styles self  +name  +style   k v    k v   H   Ç=  = K  shake_powershake_timeself  power  time   ﬁ  +Gà+  9    XÄ6 99 B 5 9=9= XÄ6 9	9 B 6 9
+9 B9	  XÄ9=9=99"=99"=L max_ascentget_scaleget_text_metrics_from_nodeheighty
+width  x	nodeget_sizeguiis_icon 				node_data  ,size *scale  À 	 T†)  6    BHÄ8 -   B9    XÄ99 FRÚL ¿spacing
+style
+width
+pairsget_letter_size word  result   i nodeData size   L∞-   B9    XÄ6 99  9B9 9 9  XÄ+ = XÄ+ = K  ¿new_rowparent_sizex	nodeget_positionguiprev_node		get_word_size self  word  word_size last_pos 	 Â 
+Dµæ+ -  9  9B9   XÄ  XÄ+ + = 9  = 96 9B9   XÄ  XÄ9	 9 =9	 9
+9  9"!9!=
+XÄ6 99 9B- 9 B99	 	9	 9		9		 	=9
+=
+6 99 B= K  ¿¿set_positionspacing
+widthget_positionguifont_heightyparent_sizexprev_nodevector3
+vmath
+stylecurrent_rownew_row	nodenew_line_nodes
+contains get_letter_size self  Enode_data  Eis_new_row Cis_node_new_row ?style 3pos 0prev_pos prev_size 
+ x 	 9€6   BHÄ-    8BFR˙K  ¿
+pairsupdate_letter_pos self  word    i  › 
+Aù„+ +  -   '  B 	  XÄ: XÄ+ ' 6 99 B 6 9 :BX
+Ä6 99 B 6 9  B5	 =
+-   	 B===6 9 +	 B6 9 9	 B6 9 -	 B6 99 	 BL ¿¿¿current_lettersinsert
+tableset_colornode_parentset_parentset_enabledis_icon	text
+style	node  set_textprefabplay_flipbookprefab_icon
+cloneguidefault
+image:					
+
+
+
+
+
+split get_style invisible self  Btext  Bstylename  Bis_icon @node ?splited ;node_data & ‘ 
+#p¸-      B9 99  XÄ6 9 6 99	B A9 9  86 9	 	 B
+ XÄ6 9	9 4	  BL ¿ insert
+tablecurrent_wordsvector4
+vmathset_scalegui
+scale
+style	node
+
+
+
+get_symbol self  $text  $stylename  $node_data node style last_word  Ì   /ê
+9    XÄ) 9   ) MÄ6 99  89BO˘4  =  + = 4 4  >= 4  = K  new_line_nodescurrent_wordslast_pos	nodedelete_nodeguicurrent_letters		
+self    i  § 
+ @ù6  -  BHÄ- 9   	 B  FR˜L  ¿¿replace_all_with_style
+pairsword_styles custom_regex text  
+ 
+ 
+k v   â 
+Xß•"9   )   XRÄUQÄ-  9  B6  9) ) B A  X(Ä6  96 9  B' B9 6  9) 	 B A = 9  XÄ+ = =  9  B=  9  9'	 B  XÀ'
+ 9  &=  X∆-    9 B9  XÄ' =  9)  B=  9   X≥
+ X±+ = 6 99 9BX©K  ¿¿	nodenew_line_nodesinsert
+tabledefaultis_icon :next_node_new_linenstylename}	find{subtostringstring
+
+ "utf8 create_symbol self  Yuobj 
+Msym Fclose_index 	 prev_style node_data % ∞ 	 I 6  9 BH
+Ä9 8-     B-    BFRÙK  ¿¿current_words
+pairscheck_new_line set_word_pos self    i 
+word  ‹  	*NÙ-   - 9 6 9B- 9" - 9! =  -   - 96 9B- 9" - 9! = 6  9  - ' -  6 9* * - B K   ¿¿¿ÄEASING_OUTSINEpositionanimateguiyshakingrandom	mathxŸ«¬ÎÖ◊«¸˜—˙·ıë˝temp_pos pos style node next_shake  ¢n€‘,9 99 X	Ä  XÄ9  XÄ-  99B- 99B9  XÄ6	 9
+) B 9)   XÄ  XÄ)  =6 9  B) =6 9 6 9	 6
+ 9
+
+9BXÄ6 9  B9  XÄ6 9 B9 =6 9 	 B6 9 '	 9
+
+
+6 9) )  +  6 9B	9)   X	Ä6 9 B+  3  B2 Ä9)   XÄ-   9*	 B2  ÄK  ¿ ¿	¿¿shake_on_write shakingPLAYBACK_LOOP_PINGPONGEASING_INOUTSINEposition.yset_positionyget_positionwavingEASING_OUTSINEPROP_COLORanimateset_colorguiwappearvector4
+vmathis_icon
+colorhex2rgbaplay_sound
+sound 	text	node
+styleµÊÃôô≥¶˝			
+
+
+
+
+$&&&))))*****,,M colors temp_pos set_shake self  onode_data  ois_instant  ostyle mnode lcolor \pos .pos next_shake  ß 4`É9  9 8-     B9  = 9  9 8  X"Ä6 99999B= 9 XÄ6 9	9 * B= 9
+ XÄ6 9	9 * B= 9 XÄ)  = XÄ+ = K  ¿is_print .min,	text
+speed
+stylemax	mathwrite_timercurrent_indexcurrent_lettersÁÃô≥≥ÊÃ˛
+ÄÄÄˇ			
+
+
+
+
+
+
+appear_node self  5node_data 1next_data 
+' à   õ) =  9  )   XÄ+ = -    BK  ¿is_printcurrent_letterscurrent_indexprint_next self   ⁄  3R§6 9 ' &B=  6 9 ' &B= 6 9 ' &B= )  = )  =	 )  =
+ 6 99 B= 6 99 B= 6 99  + B6 99 + B-    BK  ¿set_enabledget_sizeparent_sizeget_positionnode_parent_poswrite_timershake_powershake_time/text_parentnode_parent/prefab_iconprefab_icon/prefabget_nodeguiprefab					clear_prev_text self  4node  4 ¯ 
+ K∑	9  9 89   XÄ99  XÄ+ = 6 9  BHÄ-    9  8+	 BFR¯K  ¿
+pairscan_skip
+styleis_printcurrent_indexcurrent_letters	appear_node self  current_letter 	 	 	i  ∏ 	 +ó√9    XÄ  9 B+ L X!Ä) = + = -  8  XÄ' = 9 = + = -   B= - 9 B= -   B-   B-   B+ L K  ¿¿¿¿¿¿stringprev_nodedefault_styledefaultstylenamenew_rowcurrent_rowinstant_appearis_print		
+
+
+source_styles clear_prev_text modify_text precreate_text update_text_pos appear_text self  ,str  ,source  , ì  5⁄6  4  5 -  =B= -   BL ¿¿parent__index  setmetatableM init self  template_name  printer  9   ‚-    BK  ¿clear_prev_text self   ¬  ;Á9    X
+Ä9 != 9 )   XÄ-    B9 )   XÄ-    BK  ¿
+¿shake_timewrite_timeris_print				print_next update_shake self  dt   a   ı-    B+ =  )ˇˇ= K  ¿shake_timeis_printclear_prev_text self  	     	¸K  name   f  	/Å6    BHÄ-  <FR¸K  ¿
+pairsstyles styles_new  
+  k v   <   #à-  < K  ¿source_styles source  style   8   ç-  < K  ¿word_styles word  style   ñ	  3 Eå í6   ' B 6  ' B6  ' B3 3 4  4  =5 5 =	4  4  6	
+ 9		B	3
+ 3 3 3 3 3 3 3 6
+ 9) ) ) )  B3 3 3 3 3 3 3 3 3 3 3  =3" =!3$ =#3& =%3( ='3* =)3, =+3. =-30 =/32 =12  ÄL  add_word_style add_source_style add_styles play_sound 
+final update 
+clear new 
+print instant_appear          vector4        vector3
+vmathdefault   
+soundshaking appear˚®∏Ω·ıë¸
+speedö≥ÊÃ	ô≥¶˝
+color#FFFFFFwaving
+scalespacingfont_heightshake_on_write can_skipprinters  printer.regexprinter.utf8stringprinter.colorsrequire* * * + + + , , , 5 @ B C C F G S U V Y Y Y e  Ö ù ≠ ª ÿ ﬂ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ˘ "GQÄò°≥¿∑◊√ﬂ⁄‰‚ÚÁ˘ı˛¸
+colors Butf8 ?custom_regex <contains ;split :M 9styles 4word_styles 3source_styles 2temp_pos /update_shake .get_style -set_shake ,get_letter_size +get_word_size *check_new_line )update_letter_pos (set_word_pos 'invisible  get_symbol create_symbol clear_prev_text modify_text precreate_text update_text_pos appear_node print_next appear_text init   "ˇKLJ@/printer/printer.lua[    %.)   ) MÄ8  XÄL O˚+ L t  value    i  ¨  <7	  XÄ'  4  ) 6 9  '  '	 &	BXÄ< ER¸L ]+)([^gmatchstring%sinputstr  sep  t i   str  ‚ 
+/EZ9  !=  9  )   XÄ)  = 6 99 9 BXÄ-  9 96 9B9 " 9 ! =-  9 9	6 9B9 " 9 ! =	6 99 -  BK  	¿yrandom	mathxnode_parent_posnode_parentset_positionguishake_powershake_time					temp_pos self  0dt  0 ‹ 
+ *jh  XÄ XÄ  XÄ9  XÄ-  9L XÄ9 4  6 -  9BHÄ<FR˝-  8  X	Ä6 -  8BHÄ<FR˝XÄ6 '  &BL ¿[Printer]: No style name 
+print
+pairsdefault_styledefault/	
+
+
+
+
+
+
+styles self  +name  +style   k v    k v   H   Ç=  = K  shake_powershake_timeself  power  time   ﬁ  +Gà+  9    XÄ6 99 B 5 9=9= XÄ6 9	9 B 6 9
+9 B9	  XÄ9=9=99"=99"=L max_ascentget_scaleget_text_metrics_from_nodeheighty
+width  x	nodeget_sizeguiis_icon 				node_data  ,size *scale  À 
+ T†)  6    BHÄ8 -  	 B9    XÄ99 FRÚL ¿spacing
+style
+width
+pairsget_letter_size word  result   i nodeData size   L∞-   B9    XÄ6 99  9B9 9 9  XÄ+ = XÄ+ = K  ¿new_rowparent_sizex	nodeget_positionguiprev_node		get_word_size self  word  word_size last_pos 	 Â 
+Dµæ+ -  9  9B9   XÄ  XÄ+ + = 9  = 96 9B9   XÄ  XÄ9	 9 =9	 9
+9  9"!9!=
+XÄ6 99 9B- 9	 B99	 	9	 9		9		 	=9
+=
+6 99	 B= K  ¿¿set_positionspacing
+widthget_positionguifont_heightyparent_sizexprev_nodevector3
+vmath
+stylecurrent_rownew_row	nodenew_line_nodes
+contains get_letter_size self  Enode_data  Eis_new_row Cis_node_new_row ?style 3pos 0prev_pos prev_size 
+ x 
+ 9€6   BHÄ-    8	BFR˙K  ¿
+pairsupdate_letter_pos self  word    i  › Aù„+ +  -   '  B 	  XÄ: XÄ+ ' 6 99 B 6 9 :	BX
+Ä6 99 B 6 9 	 B5	 =
+- 	  
+ B===6 9	 +
+ B6 9	 9
+ B6 9	 -
+ B6 99	 
+ BL ¿¿¿current_lettersinsert
+tableset_colornode_parentset_parentset_enabledis_icon	text
+style	node  set_textprefabplay_flipbookprefab_icon
+cloneguidefault
+image:					
+
+
+
+
+
+split get_style invisible self  Btext  Bstylename  Bis_icon @node ?splited ;node_data & ‘ #p¸-      B9 99  XÄ6 9 6	 9		9B	 A9 9  86 9		 
+ B
+ XÄ6 9	9	 4
+  BL ¿ insert
+tablecurrent_wordsvector4
+vmathset_scalegui
+scale
+style	node
+
+
+
+get_symbol self  $text  $stylename  $node_data node style last_word  Ì   /ê
+9    XÄ) 9   ) MÄ6 99  89BO˘4  =  + = 4 4  >= 4  = K  new_line_nodescurrent_wordslast_pos	nodedelete_nodeguicurrent_letters		
+self    i  §  @ù6  -  BHÄ- 9  	 
+ B  FR˜L  ¿¿replace_all_with_style
+pairsword_styles custom_regex text  
+ 
+ 
+k v   â Xß•"9   )   XRÄUQÄ-  9  B6  9) ) B A  X(Ä6  96 9  B' B9 6 	 9)
+  B A = 9  XÄ+ = =  9 	 B=  9  9'	 B  XÀ'
+ 9  &=  X∆-    9 B9  XÄ' =  9)  B=  9   X≥
+ X±+ = 6 99 9BX©K  ¿¿	nodenew_line_nodesinsert
+tabledefaultis_icon :next_node_new_linenstylename}	find{subtostringstring
+
+ "utf8 create_symbol self  Yuobj 
+Msym Fclose_index 	 prev_style node_data % ∞ 
+ I 6  9 BH
+Ä9 8-    	 B-   	 BFRÙK  ¿¿current_words
+pairscheck_new_line set_word_pos self    i 
+word  ‹  		*NÙ-   - 9 6 9B- 9" - 9! =  -   - 96 9B- 9" - 9! = 6  9  - ' -  6 9* * - B K   ¿¿¿ÄEASING_OUTSINEpositionanimateguiyshakingrandom	mathxŸ«¬ÎÖ◊«¸˜—˙·ıë˝temp_pos pos style node next_shake  ¢n€‘,9 99 X	Ä  XÄ9  XÄ-  99B- 99B9  XÄ6	 9
+) B 9)   XÄ  XÄ)  =6 9 	 B) =6 9 6	 9		
+ 6 99BXÄ6 9 	 B9  XÄ6 9 B9 =6 9	 
+ B6 9	 '
+ 96 9) )  +  6 9B	9)   X	Ä6 9 B+  3  B2 Ä9)   XÄ-   9	*
+ B2  ÄK  ¿ ¿	¿¿shake_on_write shakingPLAYBACK_LOOP_PINGPONGEASING_INOUTSINEposition.yset_positionyget_positionwavingEASING_OUTSINEPROP_COLORanimateset_colorguiwappearvector4
+vmathis_icon
+colorhex2rgbaplay_sound
+sound 	text	node
+styleµÊÃôô≥¶˝			
+
+
+
+
+$&&&))))*****,,M colors temp_pos set_shake self  onode_data  ois_instant  ostyle mnode lcolor \pos .pos next_shake  ß 4`É9  9 8-     B9  = 9  9 8  X"Ä6 99999B= 9 XÄ6 9	9 * B= 9
+ XÄ6 9	9 * B= 9 XÄ)  = XÄ+ = K  ¿is_print .min,	text
+speed
+stylemax	mathwrite_timercurrent_indexcurrent_lettersÁÃô≥≥ÊÃ˛
+ÄÄÄˇ			
+
+
+
+
+
+
+appear_node self  5node_data 1next_data 
+' à   õ) =  9  )   XÄ+ = -    BK  ¿is_printcurrent_letterscurrent_indexprint_next self   ⁄  3R§6 9 ' &B=  6 9 ' &B= 6 9 ' &B= )  = )  =	 )  =
+ 6 99 B= 6 99 B= 6 99  + B6 99 + B-    BK  ¿set_enabledget_sizeparent_sizeget_positionnode_parent_poswrite_timershake_powershake_time/text_parentnode_parent/prefab_iconprefab_icon/prefabget_nodeguiprefab					clear_prev_text self  4node  4 ¯  K∑	9  9 89   XÄ99  XÄ+ = 6 9  BHÄ-    9	  8		+
+ BFR¯K  ¿
+pairscan_skip
+styleis_printcurrent_indexcurrent_letters	appear_node self  current_letter 	 	 	i  ∏ 	 +ó√9    XÄ  9 B+ L X!Ä) = + = -  8  XÄ' = 9 = + = -   B= - 9 B= -   B-   B-   B+ L K  ¿¿¿¿¿¿stringprev_nodedefault_styledefaultstylenamenew_rowcurrent_rowinstant_appearis_print		
+
+
+source_styles clear_prev_text modify_text precreate_text update_text_pos appear_text self  ,str  ,source  , ì  5⁄6  4  5 -  =B= -   BL ¿¿parent__index  setmetatableM init self  template_name  printer  9   ‚-    BK  ¿clear_prev_text self   ¬  ;Á9    X
+Ä9 != 9 )   XÄ-    B9 )   XÄ-    BK  ¿
+¿shake_timewrite_timeris_print				print_next update_shake self  dt   a   ı-    B+ =  )ˇˇ= K  ¿shake_timeis_printclear_prev_text self  	     	¸K  name   f  	/Å6    BHÄ-  <FR¸K  ¿
+pairsstyles styles_new  
+  k v   <   #à-  < K  ¿source_styles source  style   8   ç-  < K  ¿word_styles word  style   ñ	  3 Eå í6   ' B 6  ' B6  ' B3 3 4  4  =5 5 =	4  4  6	
+ 9		B	3
+ 3 3 3 3 3 3 3 6
+ 9) ) ) )  B3 3 3 3 3 3 3 3 3 3 3  =3" =!3$ =#3& =%3( ='3* =)3, =+3. =-30 =/32 =12  ÄL  add_word_style add_source_style add_styles play_sound 
+final update 
+clear new 
+print instant_appear          vector4        vector3
+vmathdefault   shake_on_write can_skip
+soundshaking appear˚®∏Ω·ıë¸
+speedö≥ÊÃ	ô≥¶˝
+color#FFFFFFwaving
+scalespacingfont_heightprinters  printer.regexprinter.utf8stringprinter.colorsrequire* * * + + + , , , 5 @ B C C F G S U V Y Y Y e  Ö ù ≠ ª ÿ ﬂ ‚ ‚ ‚ ‚ ‚ ‚ ‚ ˘ "GQÄò°≥¿∑◊√ﬂ⁄‰‚ÚÁ˘ı˛¸
+colors Butf8 ?custom_regex <contains ;split :M 9styles 4word_styles 3source_styles 2temp_pos /update_shake .get_style -set_shake ,get_letter_size +get_word_size *check_new_line )update_letter_pos (set_word_pos 'invisible  get_symbol create_symbol clear_prev_text modify_text precreate_text update_text_pos appear_node print_next appear_text init   printer.colorsprinter.utf8stringprinter.regex/printer/colors.luac/printer/utf8string.luac/printer/regex.luac" 

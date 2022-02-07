@@ -1,0 +1,39 @@
+camera = require "orthographic.camera"
+require "assets.fight_tables"
+require "assets.script"
+
+
+function init(self)
+	-- Variable Reset
+	enemy_disabled = {}
+	fight = false
+	act = false
+	current_button = "item"
+	fighting = {}
+	animating_start = {}
+	-- Camera
+	camera_id = hash("/camera")
+	camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})
+	camera.deadzone(camera_id, 320, 180, 320, 180)
+	defos.toggle_fullscreen()
+
+	-- Spawn Enemys
+	for spawn_num=1, #spawner_pos do
+		id = factory.create("#enemy", spawner_pos[spawn_num], nil, {spawner_num = spawn_num })
+		msg.post(id, "id", {id = id})
+	end
+	msg.post(".", "acquire_input_focus")
+end
+
+function on_input(self, action_id, action)
+	mouse_pos = vmath.vector3(action.x,action.y,1)
+end
+
+
+
+	
+function on_message(self, message_id, message, sender)
+	if message == hash("camera_follow_pos") then
+		go.set_position(go.get_position(message.enemy))
+	end
+end

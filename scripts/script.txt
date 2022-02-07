@@ -1,0 +1,20 @@
+-- Prototype
+Prototype approaches!
+Prototype: Attack 10 {n}  If you are seeing this, there is a problem.
+Insult
+You told Prototype that he didn't deserve to be in the game. {n} He got more upset
+You told Prototype that he wasn't a true alien. {n} He got more upset
+Complement
+You told Prototype that you liked his shade of blue. {n} He was very flattered.
+You told Prototype that he could be accepted by everyone. {n} He was very flattered.
+You spared Prototype!
+-- Old Grandpa
+Old Grandpa approaches!
+Old Grandpa: Attack 1 {n} So old his attacks barely deal damage
+Cheer
+You told Old Grandpa you liked him no matter his age {n} He warms up to you
+You told Old Grandpa you would support his decisions {n} He warms up to you
+Talk
+You talked to Old Grandpa about the alien planet {n} He feels uncomfortable
+You talked to Old Grandpa about the alien king {n} He feels uncomfortable
+You spared Old Grandpa

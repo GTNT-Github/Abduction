@@ -1,0 +1,66 @@
+require "assets.fight_tables"
+require "assets.script"
+
+-- Create Propertys
+go.property("spawner_num", 0)
+go.property("id", 0)
+local enemy_num_self = enemy_num[self.spawner_num]
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	fighting[enemy_num_self] = false
+	animating_start[enemy_num_self] = false
+	-- Set Sprite
+	sprite.play_flipbook("#enemy", enemy_num_self)
+end
+
+
+function update(self, dt)
+	-- Distance Decection
+	if fight == false then
+		if vmath.length(go.get_position() - go.get_position("/player")) < 110 then
+			msg.post("/fight", "enable_fight")
+			enemy = self.spawner_num
+			go.set_position(average, "/backend")
+			fight = true
+		end
+	end
+	if fighting[enemy_num_self] == true and animating_start[enemy_num_self] == false then
+		animating_start[enemy_num_self] = false
+		go.animate(".", "Position", go.PLAYBACK_ONCE, min_direction, go.EASING_LINEAR, 0.5, 0, final_animate)
+		go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
+	end
+	-- Change Opactiy
+	if vmath.length(go.get_position("/player") - go.get_position()) < 500 then
+
+		local distance = vmath.length(go.get_position("/player") - go.get_position())
+		if fight then
+			sprite.set_constant("#enemy", "tint", vmath.vector4(1,1,1,1))
+		elseif distance >= 200 then
+			sprite.set_constant("#enemy", "tint", vmath.vector4(1,1,1,200/distance))
+		end
+	end
+end
+
+function final_animate()
+	go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
+end
+function on_message(self, message_id, message, sender)
+	-- Delete enemy
+	if message_id == hash("disable") then
+		go.delete()
+	
+	-- Get ID
+	elseif message_id == hash("id") then
+		self.id = message.id
+
+	-- Enable Guard 1 fight
+	elseif message_id == hash("guard_1") then
+		if fight == false then
+			msg.post("/fight", "enable_fight")
+			enemy = self.spawner_num
+			go.set_position(camera_pos["Prototype"], "/backend")
+			fight = true
+		end
+	end
+end
