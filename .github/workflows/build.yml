@@ -24,7 +24,6 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.2'
-          path: .github
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
@@ -40,6 +39,11 @@ jobs:
         run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
       - name: Bundle
         run: java -jar bob.jar --platform=${{ matrix.platform }} bundle
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: TSA-Game
+          path: build/libs/
 
   # macOS is not technically needed for building, but we want to test bundling as well, since we're also testing the manifest merging
   build_with_bob_macos:
@@ -70,3 +74,8 @@ jobs:
         run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
       - name: Bundle
         run: java -jar bob.jar --platform=${{ matrix.platform }} bundle
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: TSA-Game
+          path: build/libs/
