@@ -43,8 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: TSA-Game
-          path: build/libs/
-
+          path: .defold
   # macOS is not technically needed for building, but we want to test bundling as well, since we're also testing the manifest merging
   build_with_bob_macos:
     strategy:
@@ -58,7 +57,6 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.2'
-          path: .github
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
@@ -78,4 +76,4 @@ jobs:
         uses: actions/upload-artifact@v2.2.4
         with:
           name: TSA-Game
-          path: build/libs/
+          path: .defold
