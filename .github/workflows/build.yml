@@ -24,6 +24,14 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: '11.0.2'
+      - uses: './'
+        id: setup_defold
+        with:
+          path: .defold2
+      - env:
+        BOB_VERSION: ${{ steps.setup_defold.outputs.version }}
+        BOB_SHA1: ${{ steps.setup_defold.outputs.sha1 }}
+        DEFOLD_PATH: ${{ steps.setup_defold.outputs.path }}
       - name: Get Defold version
         run: |
           TMPVAR=`curl -s http://d.defold.com/stable/${{env.VERSION_FILENAME}} | jq -r '.sha1'`
@@ -39,8 +47,6 @@ jobs:
         run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
       - name: Bundle
         run: java -jar bob.jar --platform=${{ matrix.platform }} bundle
-        with:
-          path: /defold
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2.2.4
         with:
