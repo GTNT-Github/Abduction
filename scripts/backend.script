@@ -4,6 +4,7 @@ require "assets.script"
 
 
 function init(self)
+	
 	-- Variable Reset
 	enemy_disabled = {}
 	fight = false
@@ -11,6 +12,7 @@ function init(self)
 	current_button = "item"
 	fighting = {}
 	animating_start = {}
+
 	-- Camera
 	camera_id = hash("/camera")
 	camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})
@@ -25,14 +27,10 @@ function init(self)
 	msg.post(".", "acquire_input_focus")
 end
 
-function on_input(self, action_id, action)
-	mouse_pos = vmath.vector3(action.x,action.y,1)
-end
 
-
-
-	
 function on_message(self, message_id, message, sender)
+	
+	-- Set camera for fight
 	if message == hash("camera_follow_pos") then
 		go.set_position(go.get_position(message.enemy))
 	end

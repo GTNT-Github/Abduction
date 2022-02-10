@@ -1,15 +1,19 @@
 require "assets.fight_tables"
 require "assets.script"
 
--- Create Propertys
+-- Create Properties
 go.property("spawner_num", 0)
 go.property("id", 0)
 local enemy_num_self
+
+
 function init(self)
 	msg.post(".", "acquire_input_focus")
 	enemy_num_self = enemy_num[self.spawner_num]
+	print(enemy_num_self)
 	fighting[enemy_num_self] = false
 	animating_start[enemy_num_self] = false
+
 	-- Set Sprite
 	sprite.play_flipbook("#enemy", enemy_num_self)
 end
@@ -25,11 +29,7 @@ function update(self, dt)
 			fight = true
 		end
 	end
-	if fighting[enemy_num_self] == true and animating_start[enemy_num_self] == false then
-		animating_start[enemy_num_self] = false
-		-- go.animate(".", "Position", go.PLAYBACK_ONCE, min_direction, go.EASING_LINEAR, 0.5, 0, final_animate)
-		-- go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
-	end
+
 	-- Change Opactiy
 	if vmath.length(go.get_position("/player") - go.get_position()) < 500 then
 
@@ -42,9 +42,13 @@ function update(self, dt)
 	end
 end
 
--- function final_animate()
--- 	go.animate(".", "position", go.PLAYBACK_ONCE, , easing, duration, [delay], [complete_function])
--- end
+-- Final Animation for the fight
+function final_animate()
+	go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, max_direction[enemy_num_self], go.EASING_LINEAR, 5)
+	timer.delay(5, false, function() msg.post("/fight", "attack_over") end)
+end
+
+
 function on_message(self, message_id, message, sender)
 	-- Delete enemy
 	if message_id == hash("disable") then
@@ -62,5 +66,9 @@ function on_message(self, message_id, message, sender)
 			go.set_position(camera_pos["Prototype"], "/backend")
 			fight = true
 		end
+
+	-- Attach Animation
+	elseif message_id == hash("attack") then
+		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(612, 467.87899780273, 1), go.EASING_LINEAR, 1, 0, final_animate)
 	end
 end

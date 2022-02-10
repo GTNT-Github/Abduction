@@ -1,4 +1,4 @@
-tile_set: "/assets/tilemap/cell.tilesource"
+tile_set: "/assets/tilemap/Cell/cell.tilesource"
 layers {
   id: "layer1"
   z: 0.0

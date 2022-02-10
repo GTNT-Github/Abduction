@@ -1,6 +1,3 @@
-
-
-
 function init(self)
 	msg.post(".", "acquire_input_focus")
 
@@ -51,6 +48,10 @@ function on_message(self, message_id, message, sender)
 		msg.post("#", "disable_fight")
 		msg.post("/instance" .. enemy-1 , "disable")
 		enemy_disabled[enemy_type] = true
+	
+	-- Show menu when attack is over
+	elseif message_id == hash("attack_over") then
+		gui.set_enabled(gui.get_node("act"), true)
 	end
 end
 
@@ -98,7 +99,6 @@ function flicker(self, handle, time_elapsed)
 end
 
 
--- Buttons
 function update(self, dt)
 
 	-- Show selected button
@@ -124,13 +124,11 @@ function update(self, dt)
 		gui.set_enabled(gui.get_node("act"), false)
 	end
 
-	
+	-- Show menu when text stops
 	if fight_printer.is_print == false and final_sender == nil then
 		act_text = false
 		
-		if act then
-			gui.set_enabled(gui.get_node("act"), true)
-		else
+		if not act then
 			gui.set_enabled(gui.get_node("talk"), true)
 			gui.set_enabled(gui.get_node("item"), true)
 		end
@@ -144,37 +142,33 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
+	-- Managing menus (Selecting buttons)
 	if fight_printer.is_print == false and final_sender == nil then
-		-- If button pressed
+
 		if action.pressed then
 
-			-- If fight is in progress
 			if fight then
 
-				--If not in act menu
 				if act == false then
 
-					-- If button was left
+					-- Change selected button left
 					if action_id == hash("select_left") then
 
-						-- Change to item button
 						current_button = "item"
 						sound.play("/sounds#select")
 
-					-- If button was right
+					-- Change selected button right
 					elseif action_id == hash("select_right") then
 
 						-- Change to talk button
 						current_button = "talk"
 						sound.play("/sounds#select")
 
-					--If button was enter
+					-- Select button
 					elseif action_id == hash("select_enter") then
 
-						-- If talk button selected
 						if current_button == "talk" then
 
-							-- Open act menu
 							sound.play("/sounds#select")
 							gui.set_enabled(gui.get_node("talk"), false)
 							gui.set_enabled(gui.get_node("item"), false)
@@ -188,10 +182,9 @@ function on_input(self, action_id, action)
 				-- If in act menu
 				elseif act then
 
-					-- If button was up
+					-- Move selection up
 					if action_id == hash("select_up") then
 
-						-- Move selection up
 						sound.play("/sounds#select")
 						
 						if current_button == "text_2" then
@@ -203,10 +196,9 @@ function on_input(self, action_id, action)
 							act_unselected = {"text_1","text_3"}
 						end
 
-					-- If button was down
+					-- Move selection down
 					elseif action_id == hash("select_down") then
 
-						-- Move selection down
 						sound.play("/sounds#select")
 						
 						if current_button == "text_2" then
@@ -218,17 +210,15 @@ function on_input(self, action_id, action)
 							act_unselected = {"text_1","text_3"}
 						end
 
-					-- If selection was enter
+					-- Check currently selected button
 					elseif action_id == hash("select_enter") then
 
-						-- If text_1 is selected
 						if current_button == "text_1" then
 							
 							sound.play("/sounds#select")
 							msg.post("/printer#printer_example", "printtext", {line = stats[enemy_type]})
 						end
 
-						-- If text_2 is selected
 						if current_button == "text_2" then
 							sound.play("/sounds#select")
 							
@@ -240,7 +230,6 @@ function on_input(self, action_id, action)
 							end
 						end
 
-						-- If text_3 is selected
 						if current_button == "text_3" then
 							sound.play("/sounds#select")
 							
@@ -254,7 +243,7 @@ function on_input(self, action_id, action)
 
 						
 
-					-- If escaping menu
+					-- Escape menu
 					elseif action_id == hash("esc") then
 						sound.play("/sounds#select")
 						act = false
