@@ -1,17 +1,9 @@
 images {
-  image: "/assets/projectiles/oldgrandpa1.png"
+  image: "/assets/projectiles/ProjectileDiluted.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/projectiles/oldgrandpa2.png"
-  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-}
-images {
-  image: "/assets/projectiles/prototype1.png"
-  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-}
-images {
-  image: "/assets/projectiles/prototype2.png"
+  image: "/assets/projectiles/ProjectileFullPotency.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 margin: 0
