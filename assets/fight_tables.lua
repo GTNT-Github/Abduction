@@ -27,4 +27,4 @@ fire_direction = {["Prototype"] = "Up"}
 camera_pos = {["Prototype"] = vmath.vector3(971.43,467.879,1)}
 can_flee = {["Prototype"] = false}
 original_pos = {["Prototype"] = vmath.vector3(971,905, 1)}
-camera_zoom = {["Prototype"] = 0.5}
+camera_zoom = {["Prototype"] = 0.7}

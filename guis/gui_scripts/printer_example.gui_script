@@ -20,8 +20,8 @@ end
 function update(self, dt)
 
 	-- Update printer
-	if self.printer ~= nil then
-		self.printer:update(dt)
+	if fight_printer ~= nil then
+		fight_printer:update(dt)
 	end
 end
 
@@ -31,29 +31,28 @@ function on_input(self, action_id, action)
 	if action_id == hash("space") and action.pressed then
 
 		-- Make text instantly appear
-		if self.printer.is_print then
-			self.printer:instant_appear()
+		if fight_printer.is_print then
+			fight_printer:instant_appear()
 
 		-- If spare text has been shown. Cancel fight
 		elseif final_sender == 2 then
 			msg.post("/fight#fight", "end_fight_final")
 			final_sender = nil
-			msg.post("#","disable")
+			fight_printer:clear()
 
 		-- If spare text has not been shown. Show spare text
 		elseif final_sender ~= nil then
 			msg.post("/instance" .. enemy-1, "attack")	
-			msg.post("#", "disable")
+			fight_printer:clear()
 			timer.delay(6, false, function()
-				self.printer:print(text[spare[enemy_num[enemy]]])
-				msg.post("#", "enable")
+				fight_printer:print(text[spare[enemy_num[enemy]]])
 				final_sender = 2
 			end)
 
 		-- Disable textbox
 		else
 			if fight then
-				msg.post("#", "disable")
+				fight_printer:clear()
 				msg.post("/instance" .. enemy-1, "attack")	
 			end
 		end
@@ -65,12 +64,12 @@ function on_message(self, message_id, message, sender)
 
 	-- Print Message
 	if message_id == hash("printtext") then
-		self.printer:print(text[message.line])
+		fight_printer:print(text[message.line])
 		msg.post("#", "enable")
 
  	-- Print final message
 	elseif message_id == hash("printtext_final") then
-		self.printer:print(text[message.line])
+		fight_printer:print(text[message.line])
 		msg.post("#", "enable")
 		final_sender = sender
 
