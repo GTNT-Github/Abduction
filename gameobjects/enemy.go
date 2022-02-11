@@ -16,7 +16,7 @@ components {
 embedded_components {
   id: "enemy"
   type: "sprite"
-  data: "tile_set: \"/assets/images/entities.atlas\"\n"
+  data: "tile_set: \"/assets/entities/entities.atlas\"\n"
   "default_animation: \"Prototype\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"

@@ -1,19 +1,23 @@
 images {
-  image: "/assets/images/Prototype.png"
+  image: "/assets/entities/Alien1.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/images/Old Grandpa.png"
+  image: "/assets/entities/Old Grandpa.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/entities/Prototype.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 animations {
   id: "player_walk_right"
   images {
-    image: "/assets/images/player_right_2.png"
+    image: "/assets/entities/player_right_2.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   images {
-    image: "/assets/images/player_right_idle.png"
+    image: "/assets/entities/player_right_idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -24,11 +28,11 @@ animations {
 animations {
   id: "player_walk_left"
   images {
-    image: "/assets/images/player_right_2.png"
+    image: "/assets/entities/player_right_2.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   images {
-    image: "/assets/images/player_right_idle.png"
+    image: "/assets/entities/player_right_idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -39,7 +43,7 @@ animations {
 animations {
   id: "player_left_idle"
   images {
-    image: "/assets/images/player_right_idle.png"
+    image: "/assets/entities/player_right_idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -50,7 +54,7 @@ animations {
 animations {
   id: "player_right_idle"
   images {
-    image: "/assets/images/player_right_idle.png"
+    image: "/assets/entities/player_right_idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD

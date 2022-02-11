@@ -9,7 +9,7 @@ fonts {
 }
 textures {
   name: "printer_atlas"
-  texture: "/assets/images/entities.atlas"
+  texture: "/assets/entities/entities.atlas"
 }
 background_color {
   x: 0.0
