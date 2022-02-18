@@ -74,4 +74,5 @@ jobs:
       - name: Bundle
         run: java -jar bob.jar --platform=${{ matrix.platform }} bundle output
       - name: Upload
-        uses: Is -lR /
+        run: |
+         Is -lR 
