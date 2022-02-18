@@ -1,4 +1,4 @@
-speed = 150
+SPEED = 1000
 HP = 100
 
 function init(self)
@@ -16,7 +16,7 @@ function update(self, dt)
 	
 	-- Walking
 	local pos = go.get_position()
-	go.set_position(pos + self.dir * speed * dt)
+	go.set_position(pos + self.dir * SPEED * dt)
 
 	--Setting correct idle
 	
@@ -54,7 +54,7 @@ function update(self, dt)
 
 	-- Reset Variables
 	self.correction = vmath.vector3()
-	speed = 150
+	speed = 500
 	local screen_pos = camera.world_to_screen(camera_id, go.get_position())
 
 	-- Fleeing
@@ -63,7 +63,7 @@ function update(self, dt)
 			if can_flee == enemy_num[enemy-1] then
 				msg.post("/fight", "disable_fight")
 			else
-				go.set_position(original_pos[enemy_num[enemy	]])
+				go.set_position(original_pos[enemy_num[enemy]])
 			end
 		end
 	end
@@ -99,22 +99,29 @@ function on_message(self, message_id, message, sender)
 	end
 
 	--Stop at grass
-	if message.other_group == hash("wall") or message.other_group == hash("door") then
-		
-		if message.distance >= 0 then
+		-- Handle collision
+	if message.other_group == hash("wall") then
+		if message.distance > 0 then
+			-- First, project the accumulated correction onto
+			-- the penetration vector
 			local proj = vmath.project(self.correction, message.normal * message.distance)
-			
 			if proj < 1 then
-				local comp = (message.distance - message.distance * proj) * message.normal
-				go.set_position(go.get_position() + comp)
-				self.correction = self.correction + comp
+			  -- Only care for projections that does not overshoot.
+			  local comp = (message.distance - message.distance * proj) * message.normal
+			  -- Apply compensation
+			  go.set_position(go.get_position() + comp)
+			  -- Accumulate correction done
+			  self.correction = self.correction + comp
 			end
-		end
-	
+		  end
 	-- Check for guard 
 	elseif message.other_group == hash("guard_1") then
 		if does_object_exist("/instance0") then
 			msg.post("/instance0", "guard_1")
+		end
+	elseif message.other_group == hash("guard_1_teleport") then
+		if fight then
+			go.set_position(original_pos[enemy_num[enemy]])
 		end
 	end
 end

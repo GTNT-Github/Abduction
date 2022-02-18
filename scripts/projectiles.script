@@ -1,0 +1,16 @@
+go.property("id", 0)
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("id") then
+        self.id = message.id
+        local x,y = window.get_size()
+        y = camera.screen_to_world_bounds(camera_id)
+        sprite.play_flipbook("#projectile", self.id)
+        if fire_direction[self.id] == "Up" then
+            local pos = go.get_position()
+            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(pos.x,y.y,pos.z), go.EASING_LINEAR, 2, 0, function()
+                go.delete()
+            end)
+        end
+    end
+end

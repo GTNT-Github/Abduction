@@ -3,7 +3,7 @@ images {
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/projectiles/ProjectileFullPotency.png"
+  image: "/assets/projectiles/Prototype.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 margin: 0

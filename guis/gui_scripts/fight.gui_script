@@ -33,6 +33,7 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("disable_fight") then
 		
 		if fight then
+			msg.post("/printer", "disable")
 			gui.animate(gui.get_node("box"),"scale",vmath.vector3(1,1,1),gui.EASING_LINEAR, 0.4)
 			gui.animate(gui.get_node("bottom"), "position", vmath.vector3(0,-510,0), gui.EASING_LINEAR, 0.4)
 			sound.stop("/sounds#e")
@@ -73,7 +74,7 @@ function flicker(self, handle, time_elapsed)
 			flicker_enabled=true
 			gui.set_enabled(gui.get_node("flicker"), true)
 			if flicker_loop == 1 then
-				camera.set_zoom(camera_id, camera_zoom["Prototype"])
+				camera.set_zoom(camera_id, camera_zoom[enemy_num[enemy]])
 				camera.follow(camera_id, "/backend", {offset = vmath.vector3(0,0,0)})
 				camera.deadzone(camera_id, 214, 120, 214, 120)
 				gui.set_scale(gui.get_node("box"),vmath.vector3(0.9,0.9,0))
@@ -94,7 +95,8 @@ function flicker(self, handle, time_elapsed)
 	else
 		sound.play("/sounds#e")
 		timer.cancel(handle)
-		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type]})
+		msg.post("/printer", "enable")
+		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type], battle = false})
 	end
 end
 

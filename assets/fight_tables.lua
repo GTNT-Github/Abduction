@@ -24,7 +24,7 @@ max_direction = {["Prototype"] = vmath.vector3(1331,467.879,1)}
 fire_direction = {["Prototype"] = "Up"}
 
 
-camera_pos = {["Prototype"] = vmath.vector3(971.43,467.879,1)}
+camera_pos = {["Prototype"] = vmath.vector3(972,610,1)}
 can_flee = {["Prototype"] = false}
 original_pos = {["Prototype"] = vmath.vector3(971,905, 1)}
 camera_zoom = {["Prototype"] = 0.7}

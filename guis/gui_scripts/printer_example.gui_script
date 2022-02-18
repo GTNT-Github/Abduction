@@ -1,6 +1,6 @@
 local printer = require("printer.printer")
 local styles = require("guis.styles")
-
+local text_check
 function init(self)
 
 	-- Disable GUI
@@ -42,17 +42,21 @@ function on_input(self, action_id, action)
 
 		-- If spare text has not been shown. Show spare text
 		elseif final_sender ~= nil then
-			msg.post("/instance" .. enemy-1, "attack")	
-			fight_printer:clear()
-			timer.delay(6, false, function()
-				fight_printer:print(text[spare[enemy_num[enemy]]])
-				final_sender = 2
-			end)
+			if text_check then
+				text_check = false
+				msg.post("/instance" .. enemy-1, "attack")	
+				fight_printer:clear()
+				timer.delay(6, false, function()
+					fight_printer:print(text[spare[enemy_num[enemy]]])
+					final_sender = 2
+				end)
+			end
 
 		-- Disable textbox
 		else
-			if fight then
-				fight_printer:clear()
+			fight_printer:clear()
+			if text_check then
+				text_check = false
 				msg.post("/instance" .. enemy-1, "attack")	
 			end
 		end
@@ -65,16 +69,16 @@ function on_message(self, message_id, message, sender)
 	-- Print Message
 	if message_id == hash("printtext") then
 		fight_printer:print(text[message.line])
-		msg.post("#", "enable")
-
+		if message.battle == nil then
+			text_check = true
+		end
  	-- Print final message
 	elseif message_id == hash("printtext_final") then
 		fight_printer:print(text[message.line])
-		msg.post("#", "enable")
 		final_sender = sender
-
+		text_check = true
 	-- Remove Text Box
 	elseif message_id == hash("remove_text") then
-		msg.post("#", "disable")
+		fight_printer:clear()
 	end
 end

@@ -1,9 +1,9 @@
-image: "/assets/tilemap/Cell/cell_tilesource.png"
+image: "/assets/tilemap/Cell/cell_tilesource (1).png"
 tile_width: 48
 tile_height: 48
 tile_margin: 0
 tile_spacing: 0
-collision: "/assets/tilemap/Cell/cell_tilesource.png"
+collision: "/assets/tilemap/Cell/cell_tilesource (1).png"
 material_tag: "tile"
 convex_hulls {
   index: 0
@@ -407,6 +407,51 @@ convex_hulls {
 }
 convex_hulls {
   index: 320
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 324
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 328
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 332
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 336
+  count: 4
+  collision_group: "wall"
+}
+convex_hulls {
+  index: 340
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 344
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 348
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 352
+  count: 4
+  collision_group: ""
+}
+convex_hulls {
+  index: 356
   count: 4
   collision_group: ""
 }

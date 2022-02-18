@@ -6,11 +6,10 @@ go.property("spawner_num", 0)
 go.property("id", 0)
 local enemy_num_self
 
-
 function init(self)
+	go.set_scale(vmath.vector3(1.5,1.5,1))
 	msg.post(".", "acquire_input_focus")
 	enemy_num_self = enemy_num[self.spawner_num]
-	print(enemy_num_self)
 	fighting[enemy_num_self] = false
 	animating_start[enemy_num_self] = false
 
@@ -25,7 +24,7 @@ function update(self, dt)
 		if vmath.length(go.get_position() - go.get_position("/player")) < 110 then
 			msg.post("/fight", "enable_fight")
 			enemy = self.spawner_num
-			go.set_position(average, "/backend")
+			go.set_position(camera_pos[enemy_num_self], "/backend")
 			fight = true
 		end
 	end
@@ -44,8 +43,12 @@ end
 
 -- Final Animation for the fight
 function final_animate()
+	msg.post("/projectile_spawner", "attack")
 	go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, max_direction[enemy_num_self], go.EASING_LINEAR, 5)
-	timer.delay(5, false, function() msg.post("/fight", "attack_over") end)
+	timer.delay(5, false, function() 
+		msg.post("/fight", "attack_over") 
+		msg.post("/projectile_spawner", "attack_over")
+	end)
 end
 
 

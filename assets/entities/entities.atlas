@@ -1,13 +1,9 @@
 images {
-  image: "/assets/entities/Alien1.png"
+  image: "/assets/entities/Prototype.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
   image: "/assets/entities/Old Grandpa.png"
-  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-}
-images {
-  image: "/assets/entities/Prototype.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 animations {
