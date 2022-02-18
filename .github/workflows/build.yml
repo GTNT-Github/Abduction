@@ -72,9 +72,9 @@ jobs:
       - name: Build
         run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
       - name: Bundle
-        run: java -jar bob.jar --platform=${{ matrix.platform }} bundle --bo output
+        run: java -jar bob.jar --platform=${{ matrix.platform }} bundle output
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: mac
-          path: output/TSA-Game.app
+          path: TSA-Game.app
