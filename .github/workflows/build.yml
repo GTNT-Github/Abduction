@@ -76,3 +76,6 @@ jobs:
       - name: Upload
         run: |
          ls -l
+      - name: Upload2
+        run: |
+         ls -l ./output
