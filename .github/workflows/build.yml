@@ -73,9 +73,9 @@ jobs:
         run: java -jar bob.jar --platform=${{ matrix.platform }} build --archive --build-server=${{env.BUILD_SERVER}}
       - name: Bundle
         run: java -jar bob.jar --platform=${{ matrix.platform }} bundle output --bo output
-      - name: Upload
-        run: |
-         ls -l
-      - name: Upload2
-        run: |
-         ls -l ./output
+      # - name: Upload
+      #   run: |
+      #    ls -l
+      # - name: Upload2
+      #   run: |
+      #    ls -l ./output
