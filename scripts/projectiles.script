@@ -1,5 +1,6 @@
 go.property("id", 0)
 go.property("hit", false)
+go.property("spare", false)
 
 
 function on_message(self, message_id, message, sender)
@@ -9,7 +10,14 @@ function on_message(self, message_id, message, sender)
         self.id = message.id
         local x,y = window.get_size()
         y = camera.screen_to_world_bounds(camera_id)
-        sprite.play_flipbook("#projectile", self.id)
+
+        -- Check Spare
+        if self.spare then
+            sprite.play_flipbook("#projectile", self.id.."Damaged")
+        
+        else
+            sprite.play_flipbook("#projectile", self.id)
+        end
 
         -- Move up if enemy direction is up
         if fire_direction[self.id] == "Up" then
@@ -22,7 +30,6 @@ function on_message(self, message_id, message, sender)
     -- Delete if hit
     elseif message.other_group == hash("player_bottom") or message.other_group == hash("player_top") then
         self.hit = true
-        print(1)
         go.delete()
     end
 end
@@ -31,6 +38,13 @@ function final(self)
 
     --Lower HP
     if self.hit then
-        HP=HP-attack[self.id]
+        
+        -- Check spare
+        if self.spare then
+            HP=HP-(attack[self.id]/2)
+        
+        else
+            HP=HP-(attack[self.id])
+        end
     end
 end

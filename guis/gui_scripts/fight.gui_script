@@ -40,7 +40,7 @@ function on_message(self, message_id, message, sender)
 			camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})	
 			camera.deadzone(camera_id, 320, 180, 320, 180)
 			msg.post("/printer", "remove_text")
-			camera.set_zoom(camera_id, 1)
+			msg.post("/backend", "camera_fight_end")
 			timer.delay(0.4, false, function() fight = false act = false end)
 		end
 

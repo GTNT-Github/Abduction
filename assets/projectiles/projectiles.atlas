@@ -1,5 +1,5 @@
 images {
-  image: "/assets/projectiles/ProjectileDiluted.png"
+  image: "/assets/projectiles/PrototypeDamaged.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {

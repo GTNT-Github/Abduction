@@ -34,5 +34,9 @@ function on_message(self, message_id, message, sender)
 	-- Set camera for fight
 	if message == hash("camera_follow_pos") then
 		go.set_position(go.get_position(message.enemy))
+	
+	elseif message_id == hash("camera_fight_end") then
+		
+		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.4)
 	end
 end
