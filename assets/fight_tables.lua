@@ -1,5 +1,6 @@
 -- Fight Enemy
 approach = {["Prototype"] = 2, ["Old Grandpa"] = 12}
+attack = {["Prototype"] = 10}
 stats = {["Prototype"] = 3, ["Old Grandpa"] = 13}
 text_2 = {["Prototype"] = 4, ["Old Grandpa"] = 14}
 text_2_options = {["Prototype"] = math.random(5,6), ["Old Grandpa"] = math.random(15,16)}

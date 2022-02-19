@@ -1,4 +1,4 @@
-sound: "/assets/sound/text (mp3cut.net).wav"
+sound: "/assets/sound/text.wav"
 looping: 0
 group: "master"
 gain: 1.0

@@ -1,5 +1,4 @@
 SPEED = 350
-HP = 100
 
 function init(self)
 	
@@ -54,7 +53,7 @@ function update(self, dt)
 
 	-- Reset Variables
 	self.correction = vmath.vector3()
-	speed = 350
+	SPEED = 350
 	local screen_pos = camera.world_to_screen(camera_id, go.get_position())
 
 	-- Fleeing
@@ -89,14 +88,6 @@ end
 
 
 function on_message(self, message_id, message, sender)
-
-	-- Slow when feet in sand
-	if sender == msg.url(nil, go.get_id("player"), "player_bottom") then
-		
-		if message.other_group == hash("sand") then
-			speed = 50
-		end
-	end
 
 	--Stop at grass
 		-- Handle collision

@@ -46,7 +46,7 @@ function on_input(self, action_id, action)
 				text_check = false
 				msg.post("/instance" .. enemy-1, "attack")	
 				fight_printer:clear()
-				timer.delay(6, false, function()
+				timer.delay(8, false, function()
 					fight_printer:print(text[spare[enemy_num[enemy]]])
 					final_sender = 2
 				end)

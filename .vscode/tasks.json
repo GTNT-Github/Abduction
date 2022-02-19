@@ -1,0 +1,50 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "defold",
+            "action": "bundle",
+            "configuration": "release",
+            "platform": "linux",
+            "problemMatcher": [
+                "$defold-build"
+            ],
+            "label": "Bundle: Linux",
+            "detail": "Bundle for Linux"
+        },
+        {
+            "type": "defold",
+            "action": "bundle",
+            "configuration": "release",
+            "platform": "windows",
+            "problemMatcher": [
+                "$defold-build"
+            ],
+            "label": "Bundle: Windows",
+            "detail": "Bundle for Windows"
+        },
+        {
+            "type": "defold",
+            "action": "bundle",
+            "configuration": "release",
+            "platform": "macOS",
+            "problemMatcher": [
+                "$defold-build"
+            ],
+            "label": "Bundle: MacOS",
+            "detail": "Bundle for Mac"
+        },
+        {
+            "type": "defold",
+            "action": "bundle",
+            "configuration": "release",
+            "platform": "html5",
+            "problemMatcher": [
+                "$defold-build"
+            ],
+            "label": "Bundle: HTML5",
+            "detail": "Bundle for HTML5"
+        }
+
+    ]
+}

@@ -1,5 +1,5 @@
 go.property("id", 0)
-
+local hit
 function on_message(self, message_id, message, sender)
     if message_id == hash("id") then
         self.id = message.id
@@ -12,5 +12,14 @@ function on_message(self, message_id, message, sender)
                 go.delete()
             end)
         end
+    elseif message.other_group == hash("player_bottom") or message.other_group == hash("player_top") then
+        hit = true
+        go.delete()
+    end
+end
+
+function final(self)
+    if hit then
+        HP=HP-attack[self.id]
     end
 end

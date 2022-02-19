@@ -1,0 +1,21 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	msg.post("#game", "load")
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("proxy_loaded") then
+		msg.post(sender, "init")
+		msg.post(sender, "enable")
+	elseif message_id == hash("death") then
+		msg.post("#game", "disable")
+		msg.post("#game", "final")
+		msg.post("#game", "unload")
+		msg.post("#death", "load")
+	elseif message_id == hash("begin_game") then
+		msg.post("#death", "disable")
+		msg.post("#death", "final")
+		msg.post("#death", "unload")
+		msg.post("#game", "load")
+	end
+end

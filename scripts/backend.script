@@ -12,12 +12,13 @@ function init(self)
 	current_button = "item"
 	fighting = {}
 	animating_start = {}
-
+	HP = 100
+	final_sender = nil
 	-- Camera
 	camera_id = hash("/camera")
 	camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})
 	camera.deadzone(camera_id, 320, 180, 320, 180)
-	defos.toggle_fullscreen()
+	defos.set_fullscreen(true)
 
 	-- Spawn Enemys
 	for spawn_num=1, #spawner_pos do
