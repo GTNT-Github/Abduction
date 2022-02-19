@@ -142,8 +142,11 @@ function update(self, dt)
 		gui.set_enabled(gui.get_node("item"), false)
 	end
 
+	-- Set HP Bar
 	gui.set_scale(gui.get_node("HP"), vmath.vector3((HP/100),1,1))
 	gui.set_text(gui.get_node("HP_value"), HP.."/100")
+
+	--Check if dead
 	if HP<= 0 and fight then
 		sound.stop("/sounds#e")
 		msg.post("menu:/menu", "death")

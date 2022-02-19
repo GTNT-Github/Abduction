@@ -14,6 +14,7 @@ function init(self)
 	animating_start = {}
 	HP = 100
 	final_sender = nil
+
 	-- Camera
 	camera_id = hash("/camera")
 	camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})
@@ -22,10 +23,9 @@ function init(self)
 
 	-- Spawn Enemys
 	for spawn_num=1, #spawner_pos do
-		id = factory.create("#enemy", spawner_pos[spawn_num], nil, {spawner_num = spawn_num })
+		id = factory.create("#enemy", spawner_pos[spawn_num], nil, {spawner_num = spawn_num})
 		msg.post(id, "id", {id = id})
 	end
-	msg.post(".", "acquire_input_focus")
 end
 
 

@@ -1,9 +1,11 @@
 function init(self)
+    -- Play Death screen
     sound.play("#death")
     msg.post(".", "acquire_input_focus")
 end
 
 function on_input(self, action_id, action)
+    -- Close death screen
     if action_id == hash("space") then
         msg.post("menu:/menu", "begin_game")
     end

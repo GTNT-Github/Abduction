@@ -43,18 +43,25 @@ end
 
 -- Final Animation for the fight
 function final_animate()
+
+	-- Start projectiles
 	msg.post("/projectile_spawner", "attack")
 	go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, max_direction[enemy_num_self], go.EASING_LINEAR, 5)
+
+	-- End projectiles
 	timer.delay(5, false, function() 
+		msg.post("/projectile_spawner", "attack_over")
+
+		-- Show fight UI text
 		timer.delay(2, false, function()
 			msg.post("/fight", "attack_over") 
 		end)
-		msg.post("/projectile_spawner", "attack_over")
 	end)
 end
 
 
 function on_message(self, message_id, message, sender)
+
 	-- Delete enemy
 	if message_id == hash("disable") then
 		go.delete()

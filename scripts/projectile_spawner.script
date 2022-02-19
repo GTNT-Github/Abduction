@@ -1,10 +1,15 @@
 local timer1
+
+
 function on_message(self, message_id, message, sender)
+    -- Start projectile spawning
     if message_id == hash("attack") then
         timer1 = timer.delay(0.5, true, function() 
             local projectile = factory.create("#projectile", go.get_position("/instance" .. enemy-1))
             msg.post(projectile, "id", {id = enemy_num[enemy]})
         end)
+
+    -- End Projectiles
     elseif message_id == hash("attack_over") then
         timer.cancel(timer1)
     end

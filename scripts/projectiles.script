@@ -1,25 +1,36 @@
 go.property("id", 0)
-local hit
+go.property("hit", false)
+
+
 function on_message(self, message_id, message, sender)
+
+    -- Set ID and start moving
     if message_id == hash("id") then
         self.id = message.id
         local x,y = window.get_size()
         y = camera.screen_to_world_bounds(camera_id)
         sprite.play_flipbook("#projectile", self.id)
+
+        -- Move up if enemy direction is up
         if fire_direction[self.id] == "Up" then
             local pos = go.get_position()
             go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(pos.x,y.y,pos.z), go.EASING_LINEAR, 2, 0, function()
                 go.delete()
             end)
         end
+
+    -- Delete if hit
     elseif message.other_group == hash("player_bottom") or message.other_group == hash("player_top") then
-        hit = true
+        self.hit = true
+        print(1)
         go.delete()
     end
 end
 
 function final(self)
-    if hit then
+
+    --Lower HP
+    if self.hit then
         HP=HP-attack[self.id]
     end
 end
