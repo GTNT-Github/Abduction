@@ -7,7 +7,7 @@ go.property("id", 0)
 go.property("spare", false)
 go.property("enemy_num", 0)
 function init(self)
-	go.set_scale(vmath.vector3(1.5,1.5,1))
+	go.set_scale(vmath.vector3(1.13,1.13,1))
 	msg.post(".", "acquire_input_focus")
 	self.enemy_num = enemy_num[self.spawner_num]
 	fighting[self.enemy_num] = false
@@ -65,7 +65,9 @@ function on_message(self, message_id, message, sender)
 	-- Delete enemy
 	if message_id == hash("disable") then
 		go.delete()
-	
+		msg.post(collision_outlines[self.enemy_num].."1", "disable")
+		msg.post(collision_outlines[self.enemy_num].."2", "disable")
+		msg.post(collision_outlines[self.enemy_num].."3", "disable")
 	-- Get ID
 	elseif message_id == hash("id") then
 		self.id = message.id
@@ -75,7 +77,7 @@ function on_message(self, message_id, message, sender)
 		if fight == false then
 			msg.post("/fight", "enable_fight")
 			enemy = self.spawner_num
-			go.set_position(camera_pos["Prototype"], "/backend")
+			go.set_position(camera_pos[self.enemy_num], "/backend")
 			fight = true
 		end
 

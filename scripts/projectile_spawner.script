@@ -4,6 +4,13 @@ local timer1
 function on_message(self, message_id, message, sender)
     -- Start projectile spawning
     if message_id == hash("attack") then
+        if message.spare then
+            local projectile = factory.create("#projectile", go.get_position("/instance" .. enemy-1), nil, {spare = true})
+            msg.post(projectile, "id", {id = enemy_num[enemy]})
+        else
+            local projectile = factory.create("#projectile", go.get_position("/instance" .. enemy-1))
+            msg.post(projectile, "id", {id = enemy_num[enemy]})   
+        end
         timer1 = timer.delay(0.5, true, function() 
             if message.spare then
                 local projectile = factory.create("#projectile", go.get_position("/instance" .. enemy-1), nil, {spare = true})

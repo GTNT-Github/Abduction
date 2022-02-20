@@ -1,4 +1,4 @@
-tile_set: "/assets/tilemap/DockingBay.tilesource"
+tile_set: "/assets/tilemap/DockingBay/DockingBay.tilesource"
 layers {
   id: "layer1"
   z: 0.0
