@@ -1,9 +1,9 @@
-image: "/assets/tilemap/Cell/cell_tilesource (1).png"
+image: "/assets/tilemap/Cell/cell.png"
 tile_width: 48
 tile_height: 48
 tile_margin: 0
 tile_spacing: 0
-collision: "/assets/tilemap/Cell/cell_tilesource (1).png"
+collision: "/assets/tilemap/Cell/cell.png"
 material_tag: "tile"
 convex_hulls {
   index: 0

@@ -1,0 +1,3 @@
+function init()
+    msg.post("ldsihva;khv;ofsd", "jeff")
+end
