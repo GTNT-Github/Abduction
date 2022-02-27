@@ -1,4 +1,4 @@
-image: "/assets/tilemap/DockingBay.png"
+image: "/assets/tilemap/DockingBay/DockingBay.png"
 tile_width: 48
 tile_height: 48
 tile_margin: 0

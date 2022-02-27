@@ -1,9 +1,17 @@
 images {
-  image: "/assets/projectiles/PrototypeDamaged.png"
+  image: "/assets/projectiles/Guard1.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/projectiles/Prototype.png"
+  image: "/assets/projectiles/Guard1Damaged.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/projectiles/Guard2.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/projectiles/Guard2Damaged.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 margin: 0

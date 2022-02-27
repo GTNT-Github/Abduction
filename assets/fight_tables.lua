@@ -1,31 +1,34 @@
 -- Fight Enemy
-approach = {["Prototype"] = 2, ["Old Grandpa"] = 12}
-attack = {["Prototype"] = 10}
-stats = {["Prototype"] = 3, ["Old Grandpa"] = 13}
-text_2 = {["Prototype"] = 4, ["Old Grandpa"] = 14}
-text_2_options = {["Prototype"] = math.random(5,6), ["Old Grandpa"] = math.random(15,16)}
-text_3 = {["Prototype"] = 7, ["Old Grandpa"] = 17}
-text_3_options = {["Prototype"] = math.random(8,9), ["Old Grandpa"] = math.random(18,19)}
-text_4 = {["Prototype"] = "", ["Old Grandpa"] = ""}
-text_4_options = {["Prototype"] = "", ["Old Grandpa"] = ""}
-spare = {["Prototype"] = 10, ["Old Grandpa"] = 20}
-spare_text = {["Prototype"] = 3, ["Old Grandpa"] = 2}
+approach = {["Guard1"] = 2, ["Guard2"] = 12}
+attack = {["Guard1"] = 10, ["Guard2"] = 15 }
+stats = {["Guard1"] = 3, ["Guard2"] = 13}
+text_2 = {["Guard1"] = 4, ["Guard2"] = 14}
+text_2_options = {["Guard1"] = math.random(5,6), ["Guard2"] = math.random(15,16)}
+text_3 = {["Guard1"] = 7, ["Guard2"] = 17}
+text_3_options = {["Guard1"] = math.random(8,9), ["Guard2"] = math.random(18,19)}
+text_4 = {["Guard1"] = "", ["Guard2"] = ""}
+text_4_options = {["Guard1"] = "", ["Guard2"] = ""}
+spare = {["Guard1"] = 10, ["Guard2"] = 20}
+spare_text = {["Guard1"] = 3, ["Guard2"] = 2}
 
 
 -- Fight Spawner
-spawner_pos = {vmath.vector3(971.43,467.879,1)}
-enemy_num = {"Prototype"}
+spawner_pos = {vmath.vector3(971.43,467.879,1),vmath.vector3(2771.85,467.85,0)}
+enemy_num = {"Guard1","Guard2"}
 
 -- Projectiles
-projectile_normal = {["Prototype"] = "prototype1", ["Old Grandpa"] = "oldgrandpa1"}
-projectile_spare = {["Prototype"] = "prototype2", ["Old Grandpa"] = "oldgrandpa2"}
-move_direction = {["Prototype"] = "Left-Right"}
-min_direction = {["Prototype"] = vmath.vector3(612,467.879,1)}
-max_direction = {["Prototype"] = vmath.vector3(1331,467.879,1)}
-fire_direction = {["Prototype"] = "Up"}
+move_direction = {["Guard1"] = "Left-Right", ["Guard2"] = "Up-Down"}
+min_direction = {["Guard1"] = vmath.vector3(612,467.879,1)}
+max_direction = {["Guard1"] = vmath.vector3(1331,467.879,1)}
+fire_direction = {["Guard1"] = "Up",["Guard2"] = "Left"}
 
+--Collisions
+collision_outlines = {["Guard1"] = "/Guard1Outline",["Guard2"] = "/Guard2Outline"}
+collisions = {["Guard1"] = "Guard1", ["Guard2"] = "Guard2"}
+collsion_teleport = {["Guard1"] = "Guard1Teleport", ["Guard2"] = "Guard2Teleport"}
 
-camera_pos = {["Prototype"] = vmath.vector3(972,610,1)}
-can_flee = {["Prototype"] = false}
-original_pos = {["Prototype"] = vmath.vector3(971,905, 1)}
-camera_zoom = {["Prototype"] = 0.7}
+--Camera
+camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,467.85,1)}
+can_flee = {["Guard1"] = false, ["Guard2"] = false}
+original_pos = {["Guard1"] = vmath.vector3(971,905, 1), ["Guard2"] = vmath.vector3(2338.55,484.5,1)}
+camera_zoom = {["Guard1"] = 0.7, ["Guard2"] = 1}
