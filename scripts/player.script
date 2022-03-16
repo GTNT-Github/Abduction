@@ -89,25 +89,28 @@ end
 function on_message(self, message_id, message, sender)
 
 	--Wall collisions
-	if message.other_group == hash("wall") then
+	if message_id == hash("contact_point_response") then
 
-		if message.distance > 0 then
-			local proj = vmath.project(self.correction, message.normal * message.distance)
+		if message.other_group == hash("wall") then
 
-			if proj < 1 then
-				local comp = (message.distance - message.distance * proj) * message.normal
-				go.set_position(go.get_position() + comp)
-			  	self.correction = self.correction + comp
+			if message.distance > 0 then
+				local proj = vmath.project(self.correction, message.normal * message.distance)
+
+				if proj < 1 then
+					local comp = (message.distance - message.distance * proj) * message.normal
+					go.set_position(go.get_position() + comp)
+					self.correction = self.correction + comp
+				end
 			end
 		end
-	
+	end
 	-- Check for guard 
-	elseif message.other_group == hash("guard_1") then
+	if message.other_group == hash("guard_1") then
 		if does_object_exist("/instance0") then
 			msg.post("/instance0", "guard_1")
 		end
 	-- Teleport if escaping
-	elseif message.other_group == hash("guard_1_teleport") then
+	elseif string.find(tostring(message.other_group), "Guard") then
 		if fight then
 			go.set_position(original_pos[enemy_num[enemy]])
 		end

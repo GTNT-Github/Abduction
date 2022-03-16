@@ -3,7 +3,19 @@ images {
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 images {
-  image: "/assets/entities/Old Grandpa.png"
+  image: "/assets/entities/Guard1.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/entities/Guard2.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/entities/Guard3.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
+images {
+  image: "/assets/entities/collision_outlines.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
 animations {

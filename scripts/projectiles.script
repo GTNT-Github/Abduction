@@ -9,7 +9,7 @@ function on_message(self, message_id, message, sender)
     if message_id == hash("id") then
         self.id = message.id
         local x,y = window.get_size()
-        y = camera.screen_to_world_bounds(camera_id)
+        local screen = camera.screen_to_world_bounds(camera_id)
 
         -- Check Spare
         if self.spare then
@@ -22,9 +22,15 @@ function on_message(self, message_id, message, sender)
         -- Move up if enemy direction is up
         if fire_direction[self.id] == "Up" then
             local pos = go.get_position()
-            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(pos.x,y.y,pos.z), go.EASING_LINEAR, 2, 0, function()
+            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(pos.x,screen.y,pos.z), go.EASING_LINEAR, 2, 0, function()
                 go.delete()
             end)
+        elseif fire_direction[self.id] == "Left" then
+            local pos = go.get_position()
+            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(screen.x,pos.y,pos.z), go.EASING_LINEAR, 2, 0, function()
+                go.delete()
+            end)
+        
         end
 
     -- Delete if hit
