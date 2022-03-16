@@ -84,6 +84,10 @@ function on_message(self, message_id, message, sender)
 	-- Attach Animation
 	elseif message_id == hash("attack") then
 		self.spare = message.spare
+		print(self.enemy_num)
+		for k, v in pairs(min_direction) do
+			print(k,v)
+		end
 		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, min_direction[self.enemy_num], go.EASING_LINEAR, 1, 0, final_animate)
 	end
 end

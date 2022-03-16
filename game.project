@@ -27,7 +27,7 @@ default_texture_mag_filter = nearest
 max_debug_vertices = 10000000
 
 [physics]
-debug = 0
+debug = 1
 
 [html5]
 show_made_with_defold = 0

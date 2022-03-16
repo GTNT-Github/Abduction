@@ -18,17 +18,17 @@ enemy_num = {"Guard1","Guard2"}
 
 -- Projectiles
 move_direction = {["Guard1"] = "Left-Right", ["Guard2"] = "Up-Down"}
-min_direction = {["Guard1"] = vmath.vector3(612,467.879,1)}
-max_direction = {["Guard1"] = vmath.vector3(1331,467.879,1)}
+min_direction = {["Guard1"] = vmath.vector3(612,467.879,1), ["Guard2"] = vmath.vector3(2771.85,754.85,0)}
+max_direction = {["Guard1"] = vmath.vector3(1331,467.879,1), ["Guard2"] = vmath.vector3(2771.85,178.85,0)}
 fire_direction = {["Guard1"] = "Up",["Guard2"] = "Left"}
 
 --Collisions
 collision_outlines = {["Guard1"] = "/Guard1Outline",["Guard2"] = "/Guard2Outline"}
 collisions = {["Guard1"] = "Guard1", ["Guard2"] = "Guard2"}
-collsion_teleport = {["Guard1"] = "Guard1Teleport", ["Guard2"] = "Guard2Teleport"}
+collision_teleport = {["Guard1"] = "Guard1Teleport", ["Guard2"] = "Guard2Teleport"}
 
 --Camera
-camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,467.85,1)}
+camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,390,1)}
 can_flee = {["Guard1"] = false, ["Guard2"] = false}
 original_pos = {["Guard1"] = vmath.vector3(971,905, 1), ["Guard2"] = vmath.vector3(2338.55,484.5,1)}
-camera_zoom = {["Guard1"] = 0.7, ["Guard2"] = 1}
+camera_zoom = {["Guard1"] = 0.7, ["Guard2"] = 0.6}

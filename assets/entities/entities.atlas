@@ -21,11 +21,11 @@ images {
 animations {
   id: "player_walk_right"
   images {
-    image: "/assets/entities/player_right_2.png"
+    image: "/assets/entities/Player_walk_1.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_walk_2.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -36,11 +36,11 @@ animations {
 animations {
   id: "player_walk_left"
   images {
-    image: "/assets/entities/player_right_2.png"
+    image: "/assets/entities/Player_walk_1.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_walk_2.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -51,7 +51,7 @@ animations {
 animations {
   id: "player_left_idle"
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_Idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -62,7 +62,7 @@ animations {
 animations {
   id: "player_right_idle"
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_Idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
