@@ -15,10 +15,10 @@ jobs:
   build_with_bob:
     strategy:
       matrix:
-        platform: [x86_64-linux, x86-win32, js-web]
+        platform: [x86-win32, js-web]
     runs-on: ubuntu-latest
 
-    name: Build
+    name: BuildMac
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
