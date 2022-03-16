@@ -73,7 +73,7 @@ function on_message(self, message_id, message, sender)
 		self.id = message.id
 
 	-- Enable Guard 1 fight
-	elseif message_id == hash("guard_1") then
+	elseif message_id == hash("Guard") then
 		if fight == false then
 			msg.post("/fight", "enable_fight")
 			enemy = self.spawner_num
@@ -84,6 +84,6 @@ function on_message(self, message_id, message, sender)
 	-- Attach Animation
 	elseif message_id == hash("attack") then
 		self.spare = message.spare
-		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(612, 467.87899780273, 1), go.EASING_LINEAR, 1, 0, final_animate)
+		go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, min_direction[self.enemy_num], go.EASING_LINEAR, 1, 0, final_animate)
 	end
 end
