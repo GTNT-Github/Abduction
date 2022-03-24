@@ -4,7 +4,6 @@ require "assets.script"
 
 
 function init(self)
-	print(text[12])
 	-- Variable Reset
 	enemy_disabled = {}
 	fight = false
@@ -24,7 +23,6 @@ function init(self)
 	-- Spawn Enemys
 	for spawn_num=1, #spawner_pos do
 		id = factory.create("#enemy", spawner_pos[spawn_num], nil, {spawner_num = spawn_num})
-		print(collision_outlines[enemy_num[spawn_num]])
 		msg.post(collision_outlines[enemy_num[spawn_num]].."1", "disable")
 		msg.post(collision_outlines[enemy_num[spawn_num]].."2", "disable")
 		msg.post(collision_outlines[enemy_num[spawn_num]].."3", "disable")

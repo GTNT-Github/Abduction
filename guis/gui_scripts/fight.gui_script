@@ -36,7 +36,7 @@ function on_message(self, message_id, message, sender)
 			msg.post("/printer", "disable")
 			gui.animate(gui.get_node("box"),"scale",vmath.vector3(1,1,1),gui.EASING_LINEAR, 0.4)
 			gui.animate(gui.get_node("bottom"), "position", vmath.vector3(0,-510,0), gui.EASING_LINEAR, 0.4)
-			sound.stop("/sounds#e")
+			sound.stop("/sounds#fight_song")
 			camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})	
 			camera.deadzone(camera_id, 320, 180, 320, 180)
 			msg.post("/printer", "remove_text")
@@ -70,7 +70,7 @@ function flicker(self, handle, time_elapsed)
 			gui.set_enabled(gui.get_node("flicker"), false)
 
 		elseif flicker_enabled == false then
-			sound.play("/sounds#fight_sound")
+			sound.play("/sounds#fight")
 			flicker_enabled=true
 			gui.set_enabled(gui.get_node("flicker"), true)
 			if flicker_loop == 1 then
@@ -95,7 +95,7 @@ function flicker(self, handle, time_elapsed)
 		end
 		
 	else
-		sound.play("/sounds#e")
+		sound.play("/sounds#fight_song")
 		timer.cancel(handle)
 		msg.post("/printer", "enable")
 		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type], battle = false})
@@ -150,7 +150,7 @@ function update(self, dt)
 
 	--Check if dead
 	if HP<= 0 and fight then
-		sound.stop("/sounds#e")
+		sound.stop("/sounds#fight_song")
 		msg.post("menu:/menu", "death")
 		msg.post("#", "disable")
 	end
