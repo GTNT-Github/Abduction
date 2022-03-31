@@ -1,8 +1,4 @@
 images {
-  image: "/assets/entities/Prototype.png"
-  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-}
-images {
   image: "/assets/entities/Guard1.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
@@ -21,11 +17,26 @@ images {
 animations {
   id: "player_walk_right"
   images {
-    image: "/assets/entities/player_right_2.png"
+    image: "/assets/entities/Player_walk_1.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_walk_2.png"
+    sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 4
+  flip_horizontal: 1
+  flip_vertical: 0
+}
+animations {
+  id: "player_walk_left"
+  images {
+    image: "/assets/entities/Player_walk_1.png"
+    sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+  }
+  images {
+    image: "/assets/entities/Player_walk_2.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
@@ -34,35 +45,20 @@ animations {
   flip_vertical: 0
 }
 animations {
-  id: "player_walk_left"
-  images {
-    image: "/assets/entities/player_right_2.png"
-    sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-  }
-  images {
-    image: "/assets/entities/player_right_idle.png"
-    sprite_trim_mode: SPRITE_TRIM_MODE_OFF
-  }
-  playback: PLAYBACK_LOOP_FORWARD
-  fps: 4
-  flip_horizontal: 1
-  flip_vertical: 0
-}
-animations {
   id: "player_left_idle"
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_Idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD
   fps: 4
-  flip_horizontal: 1
+  flip_horizontal: 0
   flip_vertical: 0
 }
 animations {
   id: "player_right_idle"
   images {
-    image: "/assets/entities/player_right_idle.png"
+    image: "/assets/entities/Player_Idle.png"
     sprite_trim_mode: SPRITE_TRIM_MODE_OFF
   }
   playback: PLAYBACK_LOOP_FORWARD

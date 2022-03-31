@@ -93,6 +93,7 @@ end
 
 
 function on_message(self, message_id, message, sender)
+
 	--Wall collisions
 	if message_id == hash("contact_point_response") then
 
@@ -108,7 +109,6 @@ function on_message(self, message_id, message, sender)
 				end
 			end
 		end
-	
 		-- Check for guard 
 		for i, v in pairs(collisions) do
 			if message.other_group == hash(collisions[i]) then
