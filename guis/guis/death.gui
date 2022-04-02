@@ -42,8 +42,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "U ded kekw\n"
-  "(press space)\n"
+  text: "u ded noob\n"
   ""
   font: "8-bit_font"
   id: "text"
@@ -72,6 +71,7 @@ nodes {
   template_node_child: false
   text_leading: 1.0
   text_tracking: 0.0
+  custom_type: 0
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

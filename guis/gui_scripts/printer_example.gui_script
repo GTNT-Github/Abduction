@@ -46,10 +46,17 @@ function on_input(self, action_id, action)
 				text_check = false
 				msg.post("/instance" .. enemy-1, "attack", {spare = true})	
 				fight_printer:clear()
-				timer.delay(8, false, function()
-					fight_printer:print(text[spare[enemy_num[enemy]]])
-					final_sender = 2
-				end)
+				if enemy_num[enemy] == "Guard3" then
+					timer.delay(4, false, function()
+						fight_printer:print(text[spare[enemy_num[enemy]]])
+						final_sender = 2
+					end)
+				else
+					timer.delay(8, false, function()
+						fight_printer:print(text[spare[enemy_num[enemy]]])
+						final_sender = 2
+					end)
+				end
 			end
 
 		-- Disable textbox

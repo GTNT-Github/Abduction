@@ -1,8 +1,9 @@
 go.property("id", 0)
 go.property("hit", false)
 go.property("spare", false)
-
-
+go.property("opposite", false)
+go.property("speed", 400)
+go.property("rotation",0)
 function on_message(self, message_id, message, sender)
 
     -- Set ID and start moving
@@ -10,7 +11,6 @@ function on_message(self, message_id, message, sender)
         self.id = message.id
         local x,y = window.get_size()
         local screen = camera.screen_to_world_bounds(camera_id)
-
         -- Check Spare
         if self.spare then
             sprite.play_flipbook("#projectile", self.id.."Damaged")
@@ -22,20 +22,44 @@ function on_message(self, message_id, message, sender)
         -- Move up if enemy direction is up
         if fire_direction[self.id] == "Up" then
             local pos = go.get_position()
-            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(pos.x,screen.y,pos.z), go.EASING_LINEAR, 2, 0, function()
-                go.delete()
-            end)
+            if self.opposite then
+                local new_pos = vmath.vector3(pos.x,screen.w,pos.z)
+                local duration = (vmath.length(go.get_position()-new_pos))/self.speed            
+                go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, new_pos, go.EASING_LINEAR, duration, 0, function()
+                    go.delete()
+                end)
+            else
+                local new_pos = vmath.vector3(pos.x,screen.y,pos.z)
+                local duration = (vmath.length(go.get_position()-new_pos))/self.speed            
+                go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, new_pos, go.EASING_LINEAR, duration, 0, function()
+                    go.delete()
+                end)
+            end
         elseif fire_direction[self.id] == "Left" then
+    
             local pos = go.get_position()
-            go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, vmath.vector3(screen.x,pos.y,pos.z), go.EASING_LINEAR, 2, 0, function()
-                go.delete()
-            end)
-        
+            if self.opposite then
+                local new_pos = vmath.vector3(screen.x,pos.y,pos.z)
+                local duration = (vmath.length(go.get_position()-new_pos))/self.speed            
+                go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, new_pos, go.EASING_LINEAR, duration, 0, function()
+                    go.delete()
+                end)
+            else
+                local new_pos = vmath.vector3(screen.z,pos.y,pos.z)
+                local duration = (vmath.length(go.get_position()-new_pos))/self.speed            
+                go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, new_pos, go.EASING_LINEAR, duration, 0, function()
+                    go.delete()
+                end)
+            end
+        elseif fire_direction[self.id] == "Circle" then
+            go.set(".","euler.z",self.rotation)
         end
 
     -- Delete if hit
     elseif message.other_group == hash("player_bottom") or message.other_group == hash("player_top") then
         self.hit = true
+        go.delete()
+    elseif message.other_group == hash("wall") then
         go.delete()
     end
 end
@@ -52,5 +76,15 @@ function final(self)
         else
             HP=HP-(attack[self.id])
         end
+    end
+end
+
+function update(self,dt)
+    if self.rotation ~= 0 then
+        local rotation = go.get_rotation()
+
+        local distance = 200 * dt
+        local direction = vmath.rotate(rotation, vmath.vector3(0, distance, 0))
+        go.set_position(go.get_position() + direction)
     end
 end

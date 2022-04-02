@@ -455,7 +455,6 @@ convex_hulls {
   count: 4
   collision_group: ""
 }
-collision_groups: "door"
 collision_groups: "wall"
 animations {
   id: "anim"

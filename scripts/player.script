@@ -1,7 +1,7 @@
 SPEED = 350
 
 function init(self)
-	
+	tables()
 	-- Acquire Input Focus
 	msg.post(".", "acquire_input_focus")
 
@@ -10,9 +10,7 @@ function init(self)
 	self.correction = vmath.vector3()
 	for i, v in pairs(collisions) do
 		physics.set_maskbit("#player_bottom", collisions[i], true)
-		physics.set_maskbit("#player_bottom", collision_teleport[i], true)
 		physics.set_maskbit("#player_top", collisions[i], true)
-		physics.set_maskbit("#player_top", collision_teleport[i], true)
 	end
 end
 
@@ -108,17 +106,16 @@ function on_message(self, message_id, message, sender)
 					self.correction = self.correction + comp
 				end
 			end
+		elseif message.other_group == hash("CellEnd") then
+			print(1)
+			msg.post("menu:/menu", "end")
 		end
+		
 		-- Check for guard 
 		for i, v in pairs(collisions) do
 			if message.other_group == hash(collisions[i]) then
 				if does_object_exist("/instance"..tonumber(i:sub(-1,-1))-1) then
 					msg.post("/instance"..tonumber(i:sub(-1,-1))-1, "Guard")
-				end
-				-- Teleport if escaping
-			elseif message.other_group == hash(collision_teleport[i]) then
-				if fight then
-					go.set_position(original_pos[enemy_type])
 				end
 			end
 		end

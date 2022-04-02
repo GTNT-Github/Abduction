@@ -44,6 +44,7 @@ embedded_components {
   "group: \"projectile\"\n"
   "mask: \"player_top\"\n"
   "mask: \"player_bottom\"\n"
+  "mask: \"wall\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_SPHERE\n"
