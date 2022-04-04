@@ -38163,11 +38163,7 @@ layers {
   cell {
     x: 77
     y: 19
-<<<<<<< Updated upstream
-    tile: 79
-=======
     tile: 74
->>>>>>> Stashed changes
     h_flip: 0
     v_flip: 0
     rotate90: 0
@@ -38175,11 +38171,7 @@ layers {
   cell {
     x: 78
     y: 19
-<<<<<<< Updated upstream
-    tile: 78
-=======
     tile: 74
->>>>>>> Stashed changes
     h_flip: 0
     v_flip: 0
     rotate90: 0
@@ -39051,11 +39043,7 @@ layers {
   cell {
     x: 77
     y: 20
-<<<<<<< Updated upstream
-    tile: 78
-=======
     tile: 74
->>>>>>> Stashed changes
     h_flip: 0
     v_flip: 0
     rotate90: 0
@@ -39063,11 +39051,7 @@ layers {
   cell {
     x: 78
     y: 20
-<<<<<<< Updated upstream
-    tile: 79
-=======
     tile: 74
->>>>>>> Stashed changes
     h_flip: 0
     v_flip: 0
     rotate90: 0

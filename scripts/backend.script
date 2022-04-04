@@ -15,10 +15,7 @@ function init(self)
 	animating_start = {}
 	HP = 100
 	final_sender = nil
-<<<<<<< Updated upstream
-=======
 	inventory = {"","","","",""} 
->>>>>>> Stashed changes
 	timer.delay(1, true, function()
 		tables()
 	end)

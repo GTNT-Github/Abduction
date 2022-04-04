@@ -339,7 +339,7 @@ nodes {
   yanchor: YANCHOR_NONE
   pivot: PIVOT_CENTER
   adjust_mode: ADJUST_MODE_FIT
-  parent: "item"
+  parent: "left"
   layer: ""
   inherit_alpha: true
   slice9 {
@@ -389,7 +389,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "Check Stats"
+  text: ""
   font: "8-bit_font"
   id: "item_text_1"
   xanchor: XANCHOR_NONE
@@ -453,7 +453,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "Check Stats"
+  text: ""
   font: "8-bit_font"
   id: "item_text_2"
   xanchor: XANCHOR_NONE
@@ -517,7 +517,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "text_2"
+  text: ""
   font: "8-bit_font"
   id: "item_text_3"
   xanchor: XANCHOR_NONE
@@ -581,7 +581,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "text_3"
+  text: ""
   font: "8-bit_font"
   id: "item_text_4"
   xanchor: XANCHOR_NONE
@@ -645,7 +645,7 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "text_3"
+  text: ""
   font: "8-bit_font"
   id: "item_text_5"
   xanchor: XANCHOR_NONE
