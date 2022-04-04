@@ -1,5 +1,6 @@
-SPEED = 350
-
+go.property("speed", 350)
+go.property("touching_item", false)
+go.property("touched_item", "")
 function init(self)
 	tables()
 	-- Acquire Input Focus
@@ -9,8 +10,18 @@ function init(self)
 	self.dir = vmath.vector3()
 	self.correction = vmath.vector3()
 	for i, v in pairs(collisions) do
+<<<<<<< Updated upstream
 		physics.set_maskbit("#player_bottom", collisions[i], true)
 		physics.set_maskbit("#player_top", collisions[i], true)
+=======
+		physics.set_maskbit("#player_bottom", v, true)
+		physics.set_maskbit("#player_top", v, true)
+	end
+
+	for i, v in pairs(item_collision) do
+		physics.set_maskbit("#player_bottom", v, true)
+		physics.set_maskbit("#player_top", v, true)
+>>>>>>> Stashed changes
 	end
 end
 
@@ -19,7 +30,7 @@ function update(self, dt)
 	
 	-- Walking
 	local pos = go.get_position()
-	go.set_position(pos + self.dir * SPEED * dt)
+	go.set_position(pos + self.dir * self.speed * dt)
 
 	--Setting correct idle
 	if self.current_anim == hash("player_walk_left") then
@@ -56,7 +67,7 @@ function update(self, dt)
 
 	-- Reset Variables
 	self.correction = vmath.vector3()
-	SPEED = 350
+	self.speed = 350
 	local screen_pos = camera.world_to_screen(camera_id, go.get_position())
 
 	-- Fleeing
@@ -86,6 +97,27 @@ function on_input(self, action_id, action)
 		
 	elseif action_id == hash("right") then
 		self.dir.x = 1
+	elseif action_id == hash("pick_up") and action.pressed then
+		if self.touching_item then
+			count = 0
+			local full = false
+			for k,v in pairs(inventory) do
+				count = count+1
+				if v == "" then
+					go.delete("/"..self.touched_item)
+					inventory[k] = item_name[self.touched_item]
+					self.touching_item = false
+					self.touched_item = nil
+					if count == 4 then
+						full = true
+					end
+					break
+				end
+			end
+			if count == 4 and not full then
+				print("E")
+			end
+		end
 	end
 end
 
@@ -107,7 +139,10 @@ function on_message(self, message_id, message, sender)
 				end
 			end
 		elseif message.other_group == hash("CellEnd") then
+<<<<<<< Updated upstream
 			print(1)
+=======
+>>>>>>> Stashed changes
 			msg.post("menu:/menu", "end")
 		end
 		
@@ -118,6 +153,16 @@ function on_message(self, message_id, message, sender)
 					msg.post("/instance"..tonumber(i:sub(-1,-1))-1, "Guard")
 				end
 			end
+<<<<<<< Updated upstream
+=======
+		end
+
+		for k, v in pairs(item_collision) do
+			if message.other_group == hash(v) then
+				self.touching_item = true
+				self.touched_item = v
+			end
+>>>>>>> Stashed changes
 		end
 	end
 end

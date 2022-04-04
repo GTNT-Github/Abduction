@@ -27,7 +27,17 @@ can_flee = {["Guard1"] = false,["Guard2"] = false,["Guard3"] = false}
 original_pos = {["Guard1"] = vmath.vector3(971,905,1),["Guard2"] = vmath.vector3(2338.55,484.5,1),["Guard3"]=vmath.vector3(5190.55,1440.5,1)}
 camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6}
 
+--Misc
+collisions = {["Guard1"] = "Guard1",["Guard2"] = "Guard2",["Guard3"] = "Guard3"}
 
+<<<<<<< Updated upstream
 --Misc
 collisions = {["Guard1"] = "Guard1",["Guard2"] = "Guard2",["Guard3"] = "Guard3"}
 music = {["Cell"] = ""}
+=======
+--Items
+item_type = {["shield"] = "Defense"}
+item_collision = {["shield"] = "shield"}
+item_name = {["shield"] = "Shield"}
+item_stats = {["shield"] = 10}
+>>>>>>> Stashed changes

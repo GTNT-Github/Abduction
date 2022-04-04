@@ -20,8 +20,16 @@ function on_message(self, message_id, message, sender)
 	if message_id == hash("enable_fight") then
 		sound.pause("/sounds#"..level,true)
 		enemy_type = enemy_num[enemy]
+<<<<<<< Updated upstream
 		gui.set_text(gui.get_node("text_2"), text[text_2[enemy_type]])
 		gui.set_text(gui.get_node("text_3"), text[text_3[enemy_type]])
+=======
+		gui.set_text(gui.get_node("act_text_2"), text[text_2[enemy_type]])
+		gui.set_text(gui.get_node("act_text_3"), text[text_3[enemy_type]])
+		for i, v in ipairs(inventory) do
+			gui.set_text(gui.get_node("item_text_"..i),v)
+		end
+>>>>>>> Stashed changes
 		gui.set_enabled(gui.get_node("talk"), false)
 		gui.set_enabled(gui.get_node("item"), false)
 		flicker_check = true
@@ -193,8 +201,8 @@ function on_input(self, action_id, action)
 							gui.set_enabled(gui.get_node("item"), false)
 							gui.set_enabled(gui.get_node("act"), true)
 							act = true
-							current_button = "text_1"
-							act_unselected = {"text_2","text_3"}
+							current_button = "act_text_1"
+							act_unselected = {"act_text_2","act_text_3"}
 						end
 					end
 
@@ -206,13 +214,13 @@ function on_input(self, action_id, action)
 
 						sound.play("/sounds#select")
 						
-						if current_button == "text_2" then
-							current_button = "text_1"
-							act_unselected = {"text_2","text_3"}
+						if current_button == "act_text_2" then
+							current_button = "act_text_1"
+							act_unselected = {"act_text_2","act_text_3"}
 							
-						elseif current_button == "text_3" then
-							current_button = "text_2"
-							act_unselected = {"text_1","text_3"}
+						elseif current_button == "act_text_3" then
+							current_button = "act_text_2"
+							act_unselected = {"act_text_1","act_text_3"}
 						end
 
 					-- Move selection down
@@ -220,25 +228,25 @@ function on_input(self, action_id, action)
 
 						sound.play("/sounds#select")
 						
-						if current_button == "text_2" then
-							current_button = "text_3"
-							act_unselected = {"text_2","text_1"}
-						elseif current_button == "text_1" then
+						if current_button == "act_text_2" then
+							current_button = "act_text_3"
+							act_unselected = {"act_text_2","act_text_1"}
+						elseif current_button == "act_text_1" then
 							
-							current_button = "text_2"
-							act_unselected = {"text_1","text_3"}
+							current_button = "act_text_2"
+							act_unselected = {"act_text_1","act_text_3"}
 						end
 
 					-- Check currently selected button
 					elseif action_id == hash("select_enter") then
 
-						if current_button == "text_1" then
+						if current_button == "act_text_1" then
 							
 							sound.play("/sounds#select")
 							msg.post("/printer#printer_example", "printtext", {line = stats[enemy_type]})
 						end
 
-						if current_button == "text_2" then
+						if current_button == "act_text_2" then
 							sound.play("/sounds#select")
 							
 							if spare_text[enemy_type] == 2 then
@@ -249,7 +257,7 @@ function on_input(self, action_id, action)
 							end
 						end
 
-						if current_button == "text_3" then
+						if current_button == "act_text_3" then
 							sound.play("/sounds#select")
 							
 							if spare_text[enemy_type] == 3 then

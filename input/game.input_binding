@@ -42,6 +42,10 @@ key_trigger {
   input: KEY_ESC
   action: "esc"
 }
+key_trigger {
+  input: KEY_ENTER
+  action: "pick_up"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_1
   action: "touch"
