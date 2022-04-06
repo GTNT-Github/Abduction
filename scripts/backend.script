@@ -10,12 +10,14 @@ function init(self)
 	enemy_disabled = {}
 	fight = false
 	act = false
+	armor = "-----"
+	defense = 0
 	current_button = "item"
 	fighting = {}
 	animating_start = {}
 	HP = 100
 	final_sender = nil
-	inventory = {"","","","",""} 
+	inventory = {"-----","-----","-----","-----","-----"} 
 	timer.delay(1, true, function()
 		tables()
 	end)

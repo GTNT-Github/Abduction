@@ -71,10 +71,10 @@ function final(self)
         
         -- Check spare
         if self.spare then
-            HP=HP-(attack[self.id]/2)
+            HP=HP-((attack[self.id]/2)-(defense/(attack[self.id]/2)))
         
         else
-            HP=HP-(attack[self.id])
+            HP=HP-((attack[self.id])-(defense/(attack[self.id])))
         end
     end
 end

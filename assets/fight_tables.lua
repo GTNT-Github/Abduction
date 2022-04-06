@@ -35,3 +35,4 @@ item_type = {["shield"] = "Defense"}
 item_collision = {["shield"] = "shield"}
 item_name = {["shield"] = "Shield"}
 item_stats = {["shield"] = 10}
+item_text = {["shield"] = 32}

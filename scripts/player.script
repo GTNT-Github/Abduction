@@ -98,7 +98,7 @@ function on_input(self, action_id, action)
 			local full = false
 			for k,v in pairs(inventory) do
 				count = count+1
-				if v == "" then
+				if v == "-----" then
 					go.delete("/"..self.touched_item)
 					inventory[k] = item_name[self.touched_item]
 					self.touching_item = false
