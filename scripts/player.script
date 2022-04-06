@@ -1,6 +1,6 @@
 go.property("speed", 350)
 go.property("touching_item", false)
-go.property("touched_item", "")
+touched_item = ""
 function init(self)
 	tables()
 	-- Acquire Input Focus
@@ -92,17 +92,17 @@ function on_input(self, action_id, action)
 		
 	elseif action_id == hash("right") then
 		self.dir.x = 1
-	elseif action_id == hash("pick_up") and action.pressed and does_object_exist("/"..tostring(self.touched_item)) then
+	elseif action_id == hash("pick_up") and action.pressed and does_object_exist("/"..tostring(touched_item)) then
 		if self.touching_item then
 			count = 0
 			local full = false
 			for k,v in pairs(inventory) do
 				count = count+1
 				if v == "-----" then
-					go.delete("/"..self.touched_item)
-					inventory[k] = item_name[self.touched_item]
-					self.touching_item = false
-					self.touched_item = nil
+					go.delete("/"..touched_item)
+					inventory[k] = item_name[touched_item]
+					touching_item = false
+					touched_item = nil
 					if count == 5 then
 						full = true
 					end
@@ -149,7 +149,7 @@ function on_message(self, message_id, message, sender)
 		for k, v in pairs(item_collision) do
 			if message.other_group == hash(v) then
 				self.touching_item = true
-				self.touched_item = v
+				touched_item = v
 			end
 		end
 	end
