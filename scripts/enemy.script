@@ -59,14 +59,11 @@ function on_message(self, message_id, message, sender)
 
 	-- Attach Animation
 	elseif message_id == hash("attack") then
-		print(1)
 		if self.spawner_num == 3 then
-			print(2)
 			msg.post("/projectile_spawner", "attack", {spare = self.spare})
 			timer.delay(4, false, function() 
 				msg.post("/projectile_spawner", "attack_over")
 				-- Show fight UI text
-				print(3)
 				msg.post("/fight", "attack_over") 
 			end)
 		else

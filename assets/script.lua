@@ -28,6 +28,10 @@ text = {"-- Guard 1",
 "You tell Guard 3 you respect him{n}He likes you more than he did",
 "You tell Guard 3 you don't mind if he wins{n}He respects that",
 "You spared Guard 3",
+"--Items",
+"Your inventory is full!",
 "--Shield Text",
-"Defense: 10%{n}You equiped a shield!"
+"Defense: 10%{n}You equiped a shield!",
+"--Health Potion",
+"You drank a health potion!{n}You gained 10 HP"
 }

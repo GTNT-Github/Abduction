@@ -31,8 +31,8 @@ camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6}
 collisions = {["Guard1"] = "Guard1",["Guard2"] = "Guard2",["Guard3"] = "Guard3"}
 
 --Items
-item_type = {["shield"] = "Defense"}
-item_collision = {["shield"] = "shield"}
-item_name = {["shield"] = "Shield"}
-item_stats = {["shield"] = 10}
-item_text = {["shield"] = 32}
+item_type = {["shield"] = "Defense",["heal_potion"] = "Heal"}
+item_collision = {["shield"] = "shield",["heal_potion"] = "heal_potion"}
+item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion"}
+item_stats = {["shield"] = 10,["heal_potion"] = 10}
+item_text = {["shield"] = 34,["heal_potion"] = 36}
