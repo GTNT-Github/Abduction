@@ -19,6 +19,7 @@ function on_message(self, message_id, message, sender)
 	
 	-- Enable Fight
 	if message_id == hash("enable_fight") then
+		msg.post("/printer#printer_example","disable")
 		sound.pause("/sounds#"..level,true)
 		enemy_type = enemy_num[enemy]
 		gui.set_text(gui.get_node("act_text_2"), text[text_2[enemy_type]])

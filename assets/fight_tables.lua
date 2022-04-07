@@ -35,4 +35,5 @@ item_type = {["shield"] = "Defense",["heal_potion"] = "Heal"}
 item_collision = {["shield"] = "shield",["heal_potion"] = "heal_potion"}
 item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion"}
 item_stats = {["shield"] = 10,["heal_potion"] = 10}
-item_text = {["shield"] = 34,["heal_potion"] = 36}
+item_text = {["shield"] = 35,["heal_potion"] = 38}
+item_pickup = {["shield"] = 34,["heal_potion"] = 37}

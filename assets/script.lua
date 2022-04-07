@@ -31,7 +31,9 @@ text = {"-- Guard 1",
 "--Items",
 "Your inventory is full!",
 "--Shield Text",
+"You picked up a Shield!",
 "Defense: 10%{n}You equiped a shield!",
 "--Health Potion",
+"You picked up a Health Potion!",
 "You drank a health potion!{n}You gained 10 HP"
 }

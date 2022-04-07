@@ -81,6 +81,13 @@ function on_message(self, message_id, message, sender)
 		if message.battle == nil then
 			text_check = true
 		end
+		if fight then
+			gui.set_texture(gui.get_node("text_parent"), "misc")
+			gui.play_flipbook(gui.get_node("text_parent"), "Textbox")
+		else
+			gui.set_texture(gui.get_node("text_parent"), "misc")
+			gui.play_flipbook(gui.get_node("text_parent"), "TextboxOutlined")
+		end
  	-- Print final message
 	elseif message_id == hash("printtext_final") then
 		msg.post("#","enable")

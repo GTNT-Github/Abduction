@@ -11,6 +11,10 @@ textures {
   name: "printer_atlas"
   texture: "/assets/entities/entities.atlas"
 }
+textures {
+  name: "misc"
+  texture: "/assets/misc/misc.atlas"
+}
 background_color {
   x: 0.0
   y: 0.0
@@ -43,14 +47,14 @@ nodes {
     w: 1.0
   }
   color {
-    x: 0.0
-    y: 0.0
-    z: 0.0
+    x: 1.0
+    y: 1.0
+    z: 1.0
     w: 1.0
   }
   type: TYPE_BOX
   blend_mode: BLEND_MODE_ALPHA
-  texture: ""
+  texture: "misc/Textbox"
   id: "text_parent"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE

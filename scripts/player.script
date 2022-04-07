@@ -102,17 +102,18 @@ function on_input(self, action_id, action)
 			for k,v in pairs(inventory) do
 				count = count+1
 				if v == "-----" then
+					msg.post("/printer#printer_example", "printtext", {line = item_pickup[touched_item] ,battle = false})
 					go.delete("/"..touched_item)
 					inventory[k] = item_name[touched_item]
 					touching_item = false
 					touched_item = nil
-					if count == 1 then
+					if count == 5 then
 						full = true
 					end
 					break
 				end
 			end
-			if count == 1 and not full then
+			if count == 5 and not full then
 				msg.post("/printer#printer_example", "printtext", {line = 32,battle = false})
 			end
 		end
