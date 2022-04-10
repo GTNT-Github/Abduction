@@ -43,6 +43,9 @@ function on_message(self, message_id, message, sender)
 
 	-- Delete enemy
 	if message_id == hash("disable") then
+		if finish_item[self.enemy_num] ~= nil then
+			msg.post("/"..finish_item[self.enemy_num], "enable")
+		end
 		go.delete()
 	-- Get ID
 	elseif message_id == hash("id") then

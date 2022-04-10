@@ -1,4 +1,4 @@
-sound: "/assets/sound/text.wav"
+sound: "/assets/sound/wav_files/fight.wav"
 looping: 0
 group: "master"
 gain: 0.3

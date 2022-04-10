@@ -32,6 +32,12 @@ function init(self)
 		id = factory.create("#enemy", spawner_pos[spawn_num], nil, {spawner_num = spawn_num})
 		msg.post(id, "id", {id = id})
 	end
+
+	for k, v in pairs(item_enabled) do
+		if not v then
+			msg.post("/"..k,"disable")
+		end
+	end
 end
 
 

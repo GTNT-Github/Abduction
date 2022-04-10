@@ -28,12 +28,14 @@ original_pos = {["Guard1"] = vmath.vector3(971,905,1),["Guard2"] = vmath.vector3
 camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6}
 
 --Misc
-collisions = {["Guard1"] = "Guard1",["Guard2"] = "Guard2",["Guard3"] = "Guard3"}
-
+collisions = {["Guard1"] = "/Guard1",["Guard2"] = "/Guard2",["Guard3"] = "/Guard3"}
+locks = {["Red Keycard"] = "/redlock",["Blue Keycard"] = "/bluelock",["Green Keycard"] = "/greenlock"}
 --Items
-item_type = {["shield"] = "Defense",["heal_potion"] = "Heal"}
-item_collision = {["shield"] = "shield",["heal_potion"] = "heal_potion"}
-item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion"}
+item_type = {["shield"] = "Defense",["heal_potion"] = "Heal",["BlueKeycard"] = "Keycard",["RedKeycard"] = "Keycard",["RedKeycard"] = "Keycard"}
+item_collision = {["shield"] = "/shield",["heal_potion"] = "/heal_potion",["BlueKeycard"] = "/BlueKeycard",["RedKeycard"] = "/RedKeycard",["GreenKeycard"] = "/GreenKeycard"}
+item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion",["BlueKeycard"] = "Blue Keycard",["RedKeycard"] = "Red Keycard",["GreenKeycard"] = "Green Keycard"}
 item_stats = {["shield"] = 10,["heal_potion"] = 10}
 item_text = {["shield"] = 35,["heal_potion"] = 38}
-item_pickup = {["shield"] = 34,["heal_potion"] = 37}
+item_pickup = {["shield"] = 34,["heal_potion"] = 37,["BlueKeycard"] = 40,["RedKeycard"] = 43,["GreenKeycard"] = 45}
+item_enabled = {["shield"] = true,["heal_potion"] = true,["BlueKeycard"] = false,["RedKeycard"] = false,["GreenKeycard"] = false}
+finish_item = {["Guard1"] = "BlueKeycard",["Guard2"] = "RedKeycard",["Guard3"] = "GreenKeycard",}

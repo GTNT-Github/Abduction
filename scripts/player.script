@@ -1,6 +1,9 @@
 go.property("speed", 350)
 go.property("touching_item", false)
+go.property("touching_lock", false)
+go.property("total_locks",0)
 touched_item = ""
+touched_lock = ""
 
 function init(self)
 	tables()
@@ -10,15 +13,8 @@ function init(self)
 	-- Start Variable
 	self.dir = vmath.vector3()
 	self.correction = vmath.vector3()
-	for i, v in pairs(collisions) do
-		physics.set_maskbit("#player_bottom", v, true)
-		physics.set_maskbit("#player_top", v, true)
-	end
-
-	for i, v in pairs(item_collision) do
-		physics.set_maskbit("#player_bottom", v, true)
-		physics.set_maskbit("#player_top", v, true)
-	end
+	physics.set_maskbit("#player_bottom", "trigger", true)
+	physics.set_maskbit("#player_top", "trigger", true)
 end
 
 
@@ -64,8 +60,6 @@ function update(self, dt)
 	self.correction = vmath.vector3()
 	self.speed = 350
 	local screen_pos = camera.world_to_screen(camera_id, go.get_position())
-	self.touching_item = nil
-	touched_item = nil
 
 
 	-- Fleeing
@@ -82,7 +76,6 @@ function update(self, dt)
 end
 
 function on_input(self, action_id, action)
-	
 	-- Input detection
 	if action_id == hash("down") then
 		self.dir.y = -1
@@ -95,8 +88,9 @@ function on_input(self, action_id, action)
 		
 	elseif action_id == hash("right") then
 		self.dir.x = 1
-	elseif action_id == hash("pick_up") and action.pressed and does_object_exist("/"..tostring(touched_item)) then
-		if self.touching_item then
+	elseif action_id == hash("pick_up") and action.pressed then
+
+		if self.touching_item and does_object_exist("/"..tostring(touched_item)) and not fight then
 			count = 0
 			local full = false
 			for k,v in pairs(inventory) do
@@ -115,6 +109,19 @@ function on_input(self, action_id, action)
 			end
 			if count == 5 and not full then
 				msg.post("/printer#printer_example", "printtext", {line = 32,battle = false})
+			end
+		elseif self.touching_lock then
+			self.total_locks = self.total_locks+1
+			sprite.play_flipbook(touched_lock.."#sprite", touched_lock:sub(2).."entered")
+			if self.total_locks == 3 then
+				tilemap.set_visible("/tilemap#cell","hidden_wall",false)
+				sound.pause("/sounds#"..level,true)
+				camera.shake(camera_id,0.03,0.5,both,function()
+					sound.pause("/sounds#"..level,false)
+				end)
+				sound.play("/sounds#wall_fall")
+			else
+				sound.play("/sounds#lock_enter")
 			end
 		end
 	end
@@ -137,23 +144,39 @@ function on_message(self, message_id, message, sender)
 					self.correction = self.correction + comp
 				end
 			end
-		elseif message.other_group == hash("CellEnd") then
+		end
+
+		-- Check for guard
+
+	elseif message_id == hash("trigger_response") then
+		if msg.url(message.other_id).path == hash("/CellEnd") then
 			msg.post("menu:/menu", "end")
 		end
-		
-		-- Check for guard 
 		for i, v in pairs(collisions) do
-			if message.other_group == hash(collisions[i]) then
+			if msg.url(message.other_id).path == hash(collisions[i]) then
 				if does_object_exist("/instance"..tonumber(i:sub(-1,-1))-1) then
 					msg.post("/instance"..tonumber(i:sub(-1,-1))-1, "Guard")
 				end
 			end
 		end
-
 		for k, v in pairs(item_collision) do
-			if message.other_group == hash(v) then
-				self.touching_item = true
-				touched_item = v
+			if msg.url(message.other_id).path == hash(v) and message.enter then
+					self.touching_item = true
+					touched_item = v:sub(2)
+			elseif not message.enter then
+				self.touching_item = nil
+				touched_item = nil
+			end
+		end
+
+		for k, v in pairs(locks) do
+			if msg.url(message.other_id).path == hash(v) then
+				for i,f in pairs(inventory) do
+					if f == k then
+						self.touching_lock = true
+						touched_lock = v
+					end
+				end
 			end
 		end
 	end

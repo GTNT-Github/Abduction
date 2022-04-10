@@ -29,6 +29,8 @@ max_debug_vertices = 10000000
 
 [physics]
 debug = 0
+type = 2D
+use_fixed_timestep = 0
 
 [html5]
 show_made_with_defold = 0

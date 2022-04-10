@@ -1,5 +1,5 @@
-sound: "/assets/sound/death.wav"
-looping: 1
+sound: "/assets/sound/wav_files/wall_fall.wav"
+looping: 0
 group: "master"
 gain: 1.0
 pan: 0.0

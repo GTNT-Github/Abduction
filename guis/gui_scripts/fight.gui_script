@@ -1,4 +1,4 @@
-local flicker_check = true
+go.property("flicker_check",true)
 function init(self)
 	msg.post(".", "acquire_input_focus")
 
@@ -19,6 +19,8 @@ function on_message(self, message_id, message, sender)
 	
 	-- Enable Fight
 	if message_id == hash("enable_fight") then
+		gui.set_enabled(gui.get_node("talk"), false)
+		gui.set_enabled(gui.get_node("item"), false)
 		msg.post("/printer#printer_example","disable")
 		sound.pause("/sounds#"..level,true)
 		enemy_type = enemy_num[enemy]
@@ -28,9 +30,7 @@ function on_message(self, message_id, message, sender)
 		for i, v in ipairs(inventory) do
 			gui.set_text(gui.get_node("item_text_"..i),v)
 		end
-		gui.set_enabled(gui.get_node("talk"), false)
-		gui.set_enabled(gui.get_node("item"), false)
-		flicker_check = true
+		self.flicker_check = true
 		current_button = "item"
 		fight = true
 		x= 320
@@ -105,10 +105,10 @@ function flicker(self, handle, time_elapsed)
 		end
 		
 	else
-		flicker_check = false
 		sound.play("/sounds#fight_song")
 		timer.cancel(handle)
 		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type], battle = false})
+		self.flicker_check = false
 	end
 end
 
@@ -157,7 +157,7 @@ function update(self, dt)
 	if fight_printer.is_print == false and final_sender == nil then
 		act_text = false
 		
-		if not act and not flicker_check and not items then
+		if not act and not self.flicker_check and not items then
 			gui.set_enabled(gui.get_node("talk"), true)
 			gui.set_enabled(gui.get_node("item"), true)
 		else
@@ -358,7 +358,7 @@ function on_input(self, action_id, action)
 							armor = v
 							gui.set_text(gui.get_node("armor_text"), "Armor:\n"..armor)
 							msg.post("/printer#printer_example", "printtext", {line = item_text[k]})
-						else
+						elseif item_type[k] == "Heal" then
 							HP = HP+item_stats[k]
 							if HP > 100 then
 								HP=100
@@ -388,6 +388,8 @@ function on_input(self, action_id, action)
 								end
 							end
 							msg.post("/printer#printer_example", "printtext", {line = item_text[k]})
+						elseif item_type[k] == "Keycard" then
+							msg.post("/printer#printer_example", "printtext", {line = 41})
 						end
 					end
 				end
