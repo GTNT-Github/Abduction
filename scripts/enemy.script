@@ -69,6 +69,15 @@ function on_message(self, message_id, message, sender)
 				-- Show fight UI text
 				msg.post("/fight", "attack_over") 
 			end)
+		elseif self.spawner_num == 4 then
+			msg.post("/projectile_spawner", "attack", {spare = self.spare})
+			go.animate(".","euler.z",go.PLAYBACK_ONCE_FORWARD,720,go.EASING_LINEAR,4,0,function()
+				msg.post("/projectile_spawner", "attack_over")
+				go.set(".","euler.z",0)
+			end)
+			timer.delay(6,false,function()
+				msg.post("/fight", "attack_over")
+			end)
 		else
 			self.spare = message.spare
 			go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, min_direction[self.enemy_num], go.EASING_LINEAR, 1, 0, final_animate)

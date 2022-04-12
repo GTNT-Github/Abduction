@@ -2,11 +2,11 @@ go.property("speed", 350)
 go.property("touching_item", false)
 go.property("touching_lock", false)
 go.property("total_locks",0)
+go.property("slot",0)
 touched_item = ""
 touched_lock = ""
 
 function init(self)
-	tables()
 	-- Acquire Input Focus
 	msg.post(".", "acquire_input_focus")
 
@@ -79,7 +79,6 @@ function on_input(self, action_id, action)
 	-- Input detection
 	if action_id == hash("down") then
 		self.dir.y = -1
-		
 	elseif action_id == hash("up") then
 		self.dir.y = 1
 		
@@ -113,8 +112,17 @@ function on_input(self, action_id, action)
 		elseif self.touching_lock then
 			self.total_locks = self.total_locks+1
 			sprite.play_flipbook(touched_lock.."#sprite", touched_lock:sub(2).."entered")
+			for k,v in pairs(inventory) do
+				if k > self.slot then
+					inventory[k-1] = v
+				end
+			end
+			inventory[5] = "-----"
+			self.touching_lock = nil
+			touched_lock = nil
+			self.slot = nil
 			if self.total_locks == 3 then
-				tilemap.set_visible("/tilemap#cell","hidden_wall",false)
+				tilemap.set_visible("/cell#cell","hidden_wall",false)
 				sound.pause("/sounds#"..level,true)
 				camera.shake(camera_id,0.03,0.5,both,function()
 					sound.pause("/sounds#"..level,false)
@@ -150,7 +158,7 @@ function on_message(self, message_id, message, sender)
 
 	elseif message_id == hash("trigger_response") then
 		if msg.url(message.other_id).path == hash("/CellEnd") then
-			msg.post("menu:/menu", "end")
+			go.set_position(vmath.vector3(10105,1383,1))
 		end
 		for i, v in pairs(collisions) do
 			if msg.url(message.other_id).path == hash(collisions[i]) then
@@ -170,13 +178,18 @@ function on_message(self, message_id, message, sender)
 		end
 
 		for k, v in pairs(locks) do
-			if msg.url(message.other_id).path == hash(v) then
+			if msg.url(message.other_id).path == hash(v) and message.enter then
 				for i,f in pairs(inventory) do
 					if f == k then
 						self.touching_lock = true
 						touched_lock = v
+						self.slot = i
 					end
 				end
+			elseif not message.enter then
+				self.touching_lock = nil
+				touched_lock = nil
+				self.slot = nil
 			end
 		end
 	end

@@ -25,7 +25,6 @@ function init(self)
 	camera_id = hash("/camera")
 	camera.follow(camera_id, "/player", {offset = vmath.vector3(0,0,0)})
 	camera.deadzone(camera_id, 320, 180, 320, 180)
-	defos.set_fullscreen(true)
 
 	-- Spawn Enemys
 	for spawn_num=1, #spawner_pos do
@@ -49,6 +48,6 @@ function on_message(self, message_id, message, sender)
 	
 	elseif message_id == hash("camera_fight_end") then
 		
-		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.4)
+		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1.5, go.EASING_LINEAR, 0.4)
 	end
 end

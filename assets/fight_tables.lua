@@ -1,34 +1,37 @@
 function tables()
     -- Fight Enemy
-    approach = {["Guard1"] = 2,["Guard2"] = 12,["Guard3"] = 22}
-    attack = {["Guard1"] = 10,["Guard2"] = 15,["Guard3"] = 20}
-    stats = {["Guard1"] = 3,["Guard2"] = 13,["Guard3"] = 23}
-    text_2 = {["Guard1"] = 4,["Guard2"] = 14,["Guard3"] = 24}
-    text_2_options = {["Guard1"] = math.random(5,6),["Guard2"] = math.random(15,16),["Guard3"] = math.random(25,26)}
-    text_3 = {["Guard1"] = 7,["Guard2"] = 17,["Guard3"] = 27}
-    text_3_options = {["Guard1"] = math.random(8,9),["Guard2"] = math.random(18,19),["Guard3"] = math.random(28,29)}
-    spare = {["Guard1"] = 10,["Guard2"] = 20,["Guard3"] = 30}
+    approach = {["Guard1"] = 2,["Guard2"] = 12,["Guard3"] = 22,["Guard4"] = 47}
+    attack = {["Guard1"] = 10,["Guard2"] = 15,["Guard3"] = 20,["Guard4"] = 20}
+    stats = {["Guard1"] = 3,["Guard2"] = 13,["Guard3"] = 23,["Guard4"] = 48}
+    text_2 = {["Guard1"] = 4,["Guard2"] = 14,["Guard3"] = 24,["Guard4"] = 49}
+    text_2_options = {["Guard1"] = math.random(5,6),["Guard2"] = math.random(15,16),["Guard3"] = math.random(25,26),["Guard4"] = {50,51}}
+    text_3 = {["Guard1"] = 7,["Guard2"] = 17,["Guard3"] = 27,["Guard4"] = 52}
+    text_3_options = {["Guard1"] = math.random(8,9),["Guard2"] = math.random(18,19),["Guard3"] = math.random(28,29),["Guard4"] = {53,54}}
+    spare = {["Guard1"] = 10,["Guard2"] = 20,["Guard3"] = 30,["Guard4"] = 55}
     spare_text = {["Guard1"] = 3,["Guard2"] = 2,["Guard3"]=3}
 end
+text_2_check = {["Guard4"] = false}
+text_3_check = {["Guard4"] = false}
+spare_order = {["Guard4"] = {2,3}}
 
 -- Fight Spawner
-spawner_pos = {vmath.vector3(971.43,467.879,1),vmath.vector3(2771.85,467.85,1),vmath.vector3(5616,1440,1)}
-enemy_num = {"Guard1","Guard2","Guard3"}
+spawner_pos = {vmath.vector3(971.43,467.879,1),vmath.vector3(2771.85,467.85,1),vmath.vector3(5616,1440,1),vmath.vector3(12954,1497,1)}
+enemy_num = {"Guard1","Guard2","Guard3","Guard4"}
 
 -- Projectiles
-move_direction = {["Guard1"] = "Left-Right",["Guard2"] = "Up-Down"}
+move_direction = {["Guard1"] = "Left-Right",["Guard2"] = "Up-Down",["Guard4"] = "Spin"}
 min_direction = {["Guard1"] = vmath.vector3(612,467.879,1),["Guard2"] = vmath.vector3(2771.85,754.85,1)}
 max_direction = {["Guard1"] = vmath.vector3(1331,467.879,1),["Guard2"] = vmath.vector3(2771.85,178.85,1)}
-fire_direction = {["Guard1"] = "Up",["Guard2"] = "Left",["Guard3"]="Circle"}
+fire_direction = {["Guard1"] = "Up",["Guard2"] = "Left",["Guard3"]="Circle",["Guard4"] = "Spiral"}
 
 --Camera
-camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,390,1),["Guard3"] = vmath.vector3(5616,1360,1)}
-can_flee = {["Guard1"] = false,["Guard2"] = false,["Guard3"] = false}
-original_pos = {["Guard1"] = vmath.vector3(971,905,1),["Guard2"] = vmath.vector3(2338.55,484.5,1),["Guard3"]=vmath.vector3(5190.55,1440.5,1)}
-camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6}
+camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,390,1),["Guard3"] = vmath.vector3(5616,1360,1),["Guard4"] = vmath.vector3(12954,1300,1)}
+can_flee = {["Guard1"] = false,["Guard2"] = false,["Guard3"] = false,["Guard4"] = false}
+original_pos = {["Guard1"] = vmath.vector3(971,905,1),["Guard2"] = vmath.vector3(2338.55,484.5,1),["Guard3"]=vmath.vector3(5190.55,1440.5,1),["Guard4"] = vmath.vector3(11804,1353,1)}
+camera_zoom = {["Guard1"] = 0.9,["Guard2"] = 0.8,["Guard3"] = 0.8,["Guard4"] = 0.5}
 
 --Misc
-collisions = {["Guard1"] = "/Guard1",["Guard2"] = "/Guard2",["Guard3"] = "/Guard3"}
+collisions = {["Guard1"] = "/Guard1",["Guard2"] = "/Guard2",["Guard3"] = "/Guard3",["Guard4"] = "/Guard4"}
 locks = {["Red Keycard"] = "/redlock",["Blue Keycard"] = "/bluelock",["Green Keycard"] = "/greenlock"}
 --Items
 item_type = {["shield"] = "Defense",["heal_potion"] = "Heal",["BlueKeycard"] = "Keycard",["RedKeycard"] = "Keycard",["RedKeycard"] = "Keycard"}

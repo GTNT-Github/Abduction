@@ -1,34 +1,42 @@
+
 function init(self)
-	msg.post(".", "acquire_input_focus")
-	-- Load Cell
-	msg.post("#Cell", "load")
-	level = "Cell"
+    msg.post(".", "acquire_input_focus")
+    defos.set_fullscreen(true)
+
+    -- Load Cell
 end
-
+function on_input(self,action_id,action)
+    if action_id == hash("space") and action.pressed and not main_theme and not level then
+        sound.stop("/screen#start_theme")
+        msg.post("#Cell", "load")
+        msg.post("/screen#start_menu","disable")
+        level = "Cell"
+    end
+end
 function on_message(self, message_id, message, sender)
+    -- Load proxys
+    if message_id == hash("proxy_loaded") then
+        msg.post(sender, "init")
+        msg.post(sender, "enable")
 
-	-- Load proxys
-	if message_id == hash("proxy_loaded") then
-		msg.post(sender, "init")
-		msg.post(sender, "enable")
+        -- Load death and disable Cell
+    elseif message_id == hash("death") then
+        msg.post("#Cell", "disable")
+        msg.post("#Cell", "final")
+        msg.post("#Cell", "unload")
+        msg.post("#death", "load")
 
-	-- Load death and disable Cell
-	elseif message_id == hash("death") then
-		msg.post("#Cell", "disable")
-		msg.post("#Cell", "final")
-		msg.post("#Cell", "unload")
-		msg.post("#death", "load")
-
-	-- Load Cell and disable death
-	elseif message_id == hash("begin_game") then
-		msg.post("#death", "disable")
-		msg.post("#death", "final")
-		msg.post("#death", "unload")
-		msg.post("#Cell", "load")
-	elseif message_id == hash("end") then
-		msg.post("#Cell", "disable")
-		msg.post("#Cell", "final")
-		msg.post("#Cell", "unload")
-		msg.post("#end", "load")
-	end
+        -- Load Cell and disable death
+    elseif message_id == hash("begin_game") then
+        msg.post("#death", "disable")
+        msg.post("#death", "final")
+        msg.post("#death", "unload")
+        msg.post("#Cell", "load")
+    elseif message_id == hash("DockingBay") then
+        level = "DockingBay"
+        msg.post("#Cell", "disable")
+        msg.post("#Cell", "final")
+        msg.post("#Cell", "unload")
+        msg.post("#DockingBay", "load")
+    end
 end

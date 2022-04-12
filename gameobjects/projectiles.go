@@ -17,7 +17,7 @@ embedded_components {
   id: "projectile"
   type: "sprite"
   data: "tile_set: \"/assets/projectiles/projectiles.atlas\"\n"
-  "default_animation: \"Guard1\"\n"
+  "default_animation: \"Projectile\"\n"
   "material: \"/builtins/materials/sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   ""

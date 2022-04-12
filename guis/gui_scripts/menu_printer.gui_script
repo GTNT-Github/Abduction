@@ -1,0 +1,51 @@
+local printer = require("printer.printer")
+local styles = require("guis.styles")
+require "assets.main_menu_script"
+local text_check
+function init(self)
+	msg.post(".","acquire_input_focus")
+	main_theme = true
+	sound.play("#main_theme")
+	-- Disable GUI
+	msg.post(".", "acquire_input_focus")
+	sound.set_gain("#text", 0.1)
+	-- Create printer
+	printer.add_styles(styles)
+	printer.play_sound = function(name)
+		sound.play("#text")
+	end
+	self.printer = printer.new(self, "example")
+	fight_printer = self.printer
+	time = socket.gettime()
+	index = 1
+	fight_printer:print(menu_script[index])
+end
+
+
+function update(self, dt)
+	-- Update printer
+	if socket.gettime()-time >= 3.700 then
+		if index>=17 then
+			sound.set_gain("#text", 1)
+			msg.post("/screen#start_menu","enable")
+			main_theme = false
+			msg.post("#","disable")
+		else
+			time = socket.gettime()
+			index = index+1
+			fight_printer:print(menu_script[index])
+		end
+	end
+	if fight_printer ~= nil then
+		fight_printer:update(dt)
+	end
+end
+function on_input(self,action_id,action)
+	if action_id == hash("pick_up") and action.pressed then
+		sound.set_gain("#text", 1)
+		msg.post("/screen#start_menu","enable")
+		msg.post("#","disable")
+		sound.stop("#main_theme")
+		main_theme = false
+	end
+end

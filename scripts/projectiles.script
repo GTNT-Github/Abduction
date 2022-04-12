@@ -13,10 +13,7 @@ function on_message(self, message_id, message, sender)
         local screen = camera.screen_to_world_bounds(camera_id)
         -- Check Spare
         if self.spare then
-            sprite.play_flipbook("#projectile", self.id.."Damaged")
-        
-        else
-            sprite.play_flipbook("#projectile", self.id)
+            sprite.play_flipbook("#projectile", "Damaged")
         end
 
         -- Move up if enemy direction is up
@@ -52,6 +49,8 @@ function on_message(self, message_id, message, sender)
                 end)
             end
         elseif fire_direction[self.id] == "Circle" then
+            go.set(".","euler.z",self.rotation)
+        elseif fire_direction[self.id] == "Spiral" then
             go.set(".","euler.z",self.rotation)
         end
 
