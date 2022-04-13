@@ -28,7 +28,7 @@ fire_direction = {["Guard1"] = "Up",["Guard2"] = "Left",["Guard3"]="Circle",["Gu
 camera_pos = {["Guard1"] = vmath.vector3(972,610,1),["Guard2"] = vmath.vector3(2530,390,1),["Guard3"] = vmath.vector3(5616,1360,1),["Guard4"] = vmath.vector3(12954,1300,1)}
 can_flee = {["Guard1"] = false,["Guard2"] = false,["Guard3"] = false,["Guard4"] = false}
 original_pos = {["Guard1"] = vmath.vector3(971,905,1),["Guard2"] = vmath.vector3(2338.55,484.5,1),["Guard3"]=vmath.vector3(5190.55,1440.5,1),["Guard4"] = vmath.vector3(11804,1353,1)}
-camera_zoom = {["Guard1"] = 0.9,["Guard2"] = 0.8,["Guard3"] = 0.8,["Guard4"] = 0.5}
+camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6,["Guard4"] = 0.3}
 
 --Misc
 collisions = {["Guard1"] = "/Guard1",["Guard2"] = "/Guard2",["Guard3"] = "/Guard3",["Guard4"] = "/Guard4"}

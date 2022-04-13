@@ -77,15 +77,15 @@ end
 
 function on_input(self, action_id, action)
 	-- Input detection
-	if action_id == hash("down") then
+	if action_id == hash("down") and not confrontation then
 		self.dir.y = -1
-	elseif action_id == hash("up") then
+	elseif action_id == hash("up") and not confrontation then
 		self.dir.y = 1
 		
-	elseif action_id == hash("left") then
+	elseif action_id == hash("left") and not confrontation then
 		self.dir.x = -1
 		
-	elseif action_id == hash("right") then
+	elseif action_id == hash("right") and not confrontation then
 		self.dir.x = 1
 	elseif action_id == hash("pick_up") and action.pressed then
 
@@ -159,6 +159,8 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("trigger_response") then
 		if msg.url(message.other_id).path == hash("/CellEnd") then
 			go.set_position(vmath.vector3(10105,1383,1))
+		elseif msg.url(message.other_id).path == hash("/KingSpawn") and not fight and not confrontation and message.enter then
+			msg.post("/king","king_start")
 		end
 		for i, v in pairs(collisions) do
 			if msg.url(message.other_id).path == hash(collisions[i]) then

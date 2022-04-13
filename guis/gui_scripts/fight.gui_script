@@ -270,10 +270,14 @@ function on_input(self, action_id, action)
 					if type(text_2_options[enemy_type]) == "table" and spare_order[enemy_type] == 2 then
 						msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type][2]})
 					elseif type(text_2_options[enemy_type]) == "table" and not text_2_check[enemy_type] then
-						text_2_check[enemy_type] = true
 						msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][1]})
 						if spare_order[enemy_type][#spare_order[enemy_type]] == 3 then
+							print(1)
 							spare_order[enemy_type] = 3
+							text_2_check[enemy_type] = true
+						else
+							print(2)
+							text_2_check[enemy_type] = true
 						end
 					elseif type(text_2_options[enemy_type]) == "table" then
 						msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][2]})
@@ -292,10 +296,14 @@ function on_input(self, action_id, action)
 					if type(text_3_options[enemy_type]) == "table" and spare_order[enemy_type] == 3 then
 						msg.post("/printer#printer_example", "printtext_final", {line = text_3_options[enemy_type][2]})
 					elseif type(text_3_options[enemy_type]) == "table" and not text_3_check[enemy_type] then
-						text_3_check[enemy_type] = true
 						msg.post("/printer#printer_example", "printtext", {line = text_3_options[enemy_type][1]})
 						if spare_order[enemy_type][#spare_order[enemy_type]] == 2 then
+							print(3)
 							spare_order[enemy_type] = 2
+							text_2_check[enemy_type] = true
+						elseif not spare_order[enemy_type][#spare_order[enemy_type]] == 2 then
+							print(4)
+							text_3_check[enemy_type] = true
 						end
 					elseif type(text_3_options[enemy_type]) == "table" then
 						msg.post("/printer#printer_example", "printtext", {line = text_3_options[enemy_type][2]})

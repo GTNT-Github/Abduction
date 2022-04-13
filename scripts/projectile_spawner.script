@@ -10,7 +10,7 @@ function on_message(self, message_id, message, sender)
                 msg.post(projectile, "id", {id = enemy_num[enemy]})
             end
         elseif fire_direction[enemy_num[enemy]] == "Spiral" then
-            timer1 = timer.delay(0.01, true, function()
+            timer1 = timer.delay(0.0001, true, function()
                 local rotation = go.get("/instance"..enemy-1,"euler.z")
                 local projectile = factory.create("#projectile", go.get_position("/instance" .. enemy-1), nil, {spare = message.spare,opposite=false,rotation=rotation})
                 msg.post(projectile, "id", {id = enemy_num[enemy]})

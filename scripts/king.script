@@ -1,0 +1,16 @@
+function init(self)
+	msg.post("#", "disable")
+	go.set("#king","tint.w",0)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("king_start") then
+		confrontation = true
+		sound.stop("/sounds#"..level)
+		sound.play("/sounds#king_appear")
+		go.animate("#king","tint.w",go.PLAYBACK_ONCE_FORWARD, 1,go.EASING_LINEAR,1.7,0,function()
+			msg.post("/printer#printer_example","index_print",{index={56,57,58,59,60,61,62,63,64,65,66,67,68,69}})
+			sound.play("/sounds#king_confrontation")
+		end)
+	end
+end

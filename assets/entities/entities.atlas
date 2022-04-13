@@ -18,6 +18,10 @@ images {
   image: "/assets/entities/Guard4.png"
   sprite_trim_mode: SPRITE_TRIM_MODE_OFF
 }
+images {
+  image: "/assets/entities/AlienKing.png"
+  sprite_trim_mode: SPRITE_TRIM_MODE_OFF
+}
 animations {
   id: "player_walk_right"
   images {

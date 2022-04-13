@@ -15,6 +15,7 @@ function init(self)
 	current_button = "item"
 	fighting = {}
 	animating_start = {}
+	confrontation = false
 	HP = 100
 	final_sender = nil
 	inventory = {"-----","-----","-----","-----","-----"} 
@@ -48,6 +49,6 @@ function on_message(self, message_id, message, sender)
 	
 	elseif message_id == hash("camera_fight_end") then
 		
-		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1.5, go.EASING_LINEAR, 0.4)
+		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.4)
 	end
 end
