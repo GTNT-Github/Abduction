@@ -1,5 +1,6 @@
 local timer1
-
+local king_timer
+local battle_king_timer = {}
 
 function on_message(self, message_id, message, sender)
     -- Start projectile spawning
@@ -31,8 +32,37 @@ function on_message(self, message_id, message, sender)
 
     -- End Projectiles
     elseif message_id == hash("attack_over") then
-        if timer1 then
+        if enemy ~= "King" then
             timer.cancel(timer1)
+        else
+            msg.post("#","king_idle")
+            for i,v in pairs(battle_king_timer) do
+                timer.cancel(v)
+            end
         end
+    elseif message_id == hash("king_idle") then
+        if king_timer == nil then
+            king_timer = timer.delay(0.2,true,function()
+                for i=1,4 do
+                    local projectile = factory.create("#projectile", king_pos[i], nil, {spare=false,rotation=0,king=true})
+                    msg.post(projectile,"rotation")
+                    local projectile = factory.create("#projectile", king_pos[i], nil, {spare=false,rotation=180,king=true})
+                    msg.post(projectile,"rotation")
+                end
+            end)
+        end
+    elseif message_id == hash("king_attack") then
+        if king_timer ~= nil then
+            timer.cancel(king_timer)
+            king_timer = nil
+        end
+        battle_king_timer[message.num] = timer.delay(0.3, true, function()
+            local rotation = go.get(king_guards[message.num],"euler.z")
+            local projectile = factory.create("#projectile", go.get_position(king_guards[message.num]), nil, {king=true,opposite=false,rotation=rotation})
+            msg.post(projectile,"rotation")
+        end)
     end
+end
+
+function update(self,dt)
 end

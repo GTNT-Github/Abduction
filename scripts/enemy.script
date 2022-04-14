@@ -6,16 +6,20 @@ go.property("spawner_num", 0)
 go.property("id", 0)
 go.property("spare", false)
 go.property("enemy_num", 0)
+go.property("king",false)
+go.property("king_num",0)
 
 function init(self)
 	go.set_scale(vmath.vector3(1.13,1.13,1))
 	msg.post(".", "acquire_input_focus")
-	self.enemy_num = enemy_num[self.spawner_num]
-	fighting[self.enemy_num] = false
-	animating_start[self.enemy_num] = false
+	if not self.king then
+		self.enemy_num = enemy_num[self.spawner_num]
+		fighting[self.enemy_num] = false
+		animating_start[self.enemy_num] = false
 
-	-- Set Sprite
-	sprite.play_flipbook("#enemy", self.enemy_num)
+		-- Set Sprite
+		sprite.play_flipbook("#enemy", self.enemy_num)
+	end
 end
 
 
@@ -75,12 +79,21 @@ function on_message(self, message_id, message, sender)
 				msg.post("/projectile_spawner", "attack_over")
 				go.set(".","euler.z",0)
 			end)
-			timer.delay(6,false,function()
+			timer.delay(10,false,function()
 				msg.post("/fight", "attack_over")
 			end)
 		else
 			self.spare = message.spare
 			go.animate(".", "position", go.PLAYBACK_ONCE_FORWARD, min_direction[self.enemy_num], go.EASING_LINEAR, 1, 0, final_animate)
 		end
+	elseif message_id == hash("king_attack") then
+		msg.post("/projectile_spawner", "king_attack", {attack = message.attack,num=message.num})
+		go.animate(".","euler.z",go.PLAYBACK_ONCE_FORWARD,720,go.EASING_LINEAR,4,0,function()
+			msg.post("/projectile_spawner", "attack_over")
+			go.set(".","euler.z",0)
+		end)
+		timer.delay(10,false,function()
+			msg.post("/fight", "attack_over")
+		end)
 	end
 end

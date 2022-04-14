@@ -6,11 +6,10 @@ function init(self)
     -- Load Cell
 end
 function on_input(self,action_id,action)
-    if action_id == hash("space") and action.pressed and not main_theme and not level then
+    if action_id == hash("space") and action.pressed and not main_theme and not level and not transition then
         sound.stop("/screen#start_theme")
-        msg.post("#Cell", "load")
+        msg.post("#transition", "load")
         msg.post("/screen#start_menu","disable")
-        level = "Cell"
     end
 end
 function on_message(self, message_id, message, sender)
@@ -32,11 +31,11 @@ function on_message(self, message_id, message, sender)
         msg.post("#death", "final")
         msg.post("#death", "unload")
         msg.post("#Cell", "load")
-    elseif message_id == hash("DockingBay") then
-        level = "DockingBay"
-        msg.post("#Cell", "disable")
-        msg.post("#Cell", "final")
-        msg.post("#Cell", "unload")
-        msg.post("#DockingBay", "load")
+    elseif message_id == hash("transition_end") then
+        level = "Cell"
+        msg.post("#transition", "disable")
+        msg.post("#transition", "final")
+        msg.post("#transition", "unload")
+        msg.post("#Cell", "load")
     end
 end

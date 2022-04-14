@@ -12,5 +12,9 @@ function on_message(self, message_id, message, sender)
 			msg.post("/printer#printer_example","index_print",{index={56,57,58,59,60,61,62,63,64,65,66,67,68,69}})
 			sound.play("/sounds#king_confrontation")
 		end)
+	elseif message_id == hash("attack") then
+		for i=1,4 do
+			msg.post(king_guards[i],"king_attack",{attack="Spin",num=i})
+		end
 	end
 end

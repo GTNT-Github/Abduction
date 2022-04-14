@@ -1,0 +1,39 @@
+
+function init(self)
+    msg.post("#","disable")
+end
+function on_message(self, message_id, message, sender)
+    if message_id == hash("cell_transition") then
+        transition = true
+
+        msg.post("#","enable")
+        sound.play("/sounds#transition")
+        gui.set_text(gui.get_node("text"),"Part 1\nThe Cells")
+        timer.delay(3,false,function()
+            transition = false
+            msg.post("menu:/menu","transition_end")
+            msg.post("#","disable")
+        end)
+    elseif message_id == hash("docking_bay_transition") then
+        transition = true
+        msg.post("#","enable")
+        sound.stop("/sounds#"..level)
+        sound.play("/sounds#transition")
+        gui.set_text(gui.get_node("text"),"Part 2\nThe Docking Bay")
+        timer.delay(3,false,function()
+            msg.post("#","disable")
+            transition = false
+            sound.play("/sounds#"..level)
+        end)
+    elseif message_id == hash("bridge_transition") then
+        transition = true
+        msg.post("#","enable")
+        sound.stop("/sounds#"..level)
+        sound.play("/sounds#transition")
+        gui.set_text(gui.get_node("text"),"Part 3\nThe Bridge")
+        timer.delay(3,false,function()
+            msg.post("#","disable")
+            transition = false
+        end)
+    end
+end

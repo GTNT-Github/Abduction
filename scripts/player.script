@@ -64,7 +64,7 @@ function update(self, dt)
 
 	-- Fleeing
 	if screen_pos.x < 190 or screen_pos.x > 1100 or screen_pos.y < 200 or screen_pos.y > 600 then
-		if fight then
+		if fight and enemy ~= "King" then
 			if can_flee == enemy_num[enemy-1] then
 				msg.post("/fight", "disable_fight")
 			else
@@ -77,15 +77,15 @@ end
 
 function on_input(self, action_id, action)
 	-- Input detection
-	if action_id == hash("down") and not confrontation then
+	if action_id == hash("down") and not confrontation and not transition then
 		self.dir.y = -1
-	elseif action_id == hash("up") and not confrontation then
+	elseif action_id == hash("up") and not confrontation and not transition then
 		self.dir.y = 1
 		
-	elseif action_id == hash("left") and not confrontation then
+	elseif action_id == hash("left") and not confrontation and not transition then
 		self.dir.x = -1
 		
-	elseif action_id == hash("right") and not confrontation then
+	elseif action_id == hash("right") and not confrontation and not transition then
 		self.dir.x = 1
 	elseif action_id == hash("pick_up") and action.pressed then
 
@@ -137,11 +137,10 @@ end
 
 
 function on_message(self, message_id, message, sender)
-
 	--Wall collisions
 	if message_id == hash("contact_point_response") then
 
-		if message.other_group == hash("wall") then
+		if message.other_group == hash("wall") or message.other_group == hash("desks") then
 
 			if message.distance > 0 then
 				local proj = vmath.project(self.correction, message.normal * message.distance)
@@ -157,30 +156,35 @@ function on_message(self, message_id, message, sender)
 		-- Check for guard
 
 	elseif message_id == hash("trigger_response") then
-		if msg.url(message.other_id).path == hash("/CellEnd") then
+		local id = msg.url(message.other_id).path
+		if id == hash("/CellEnd") and not confrontation and message.enter then
+			msg.post("/transition#transition","docking_bay_transition")
 			go.set_position(vmath.vector3(10105,1383,1))
-		elseif msg.url(message.other_id).path == hash("/KingSpawn") and not fight and not confrontation and message.enter then
+		elseif id == hash("/KingSpawn") and not fight and not confrontation and message.enter then
 			msg.post("/king","king_start")
+		elseif string.find(tostring(id),"KingCheck") then
+			king_pos_check = tonumber(string.sub(string.sub(tostring(id),-2),-2,1))
+			king_2_check = king_pos_check-1
 		end
 		for i, v in pairs(collisions) do
-			if msg.url(message.other_id).path == hash(collisions[i]) then
+			if id == hash(collisions[i]) then
 				if does_object_exist("/instance"..tonumber(i:sub(-1,-1))-1) then
 					msg.post("/instance"..tonumber(i:sub(-1,-1))-1, "Guard")
 				end
 			end
 		end
 		for k, v in pairs(item_collision) do
-			if msg.url(message.other_id).path == hash(v) and message.enter then
+			if id == hash(v) and message.enter and tostring(sender) == "url: [Cell:/player#player_top]" then
 					self.touching_item = true
 					touched_item = v:sub(2)
-			elseif not message.enter then
+			elseif not message.enter and tostring(sender) == "url: [Cell:/player#player_top]" then
 				self.touching_item = nil
 				touched_item = nil
 			end
 		end
 
 		for k, v in pairs(locks) do
-			if msg.url(message.other_id).path == hash(v) and message.enter then
+			if id == hash(v) and message.enter then
 				for i,f in pairs(inventory) do
 					if f == k then
 						self.touching_lock = true

@@ -16,9 +16,10 @@ function init(self)
 	fighting = {}
 	animating_start = {}
 	confrontation = false
+	transition = false
 	HP = 100
 	final_sender = nil
-	inventory = {"-----","-----","-----","-----","-----"} 
+	inventory = {"Shield","Health Potion","-----","-----","-----"} 
 	timer.delay(1, true, function()
 		tables()
 	end)
@@ -50,5 +51,21 @@ function on_message(self, message_id, message, sender)
 	elseif message_id == hash("camera_fight_end") then
 		
 		go.animate("/camera#script","zoom",go.PLAYBACK_ONCE_FORWARD, 1, go.EASING_LINEAR, 0.4)
+	elseif message_id == hash("bridge_transition") then
+		go.set_position(vmath.vector3(16522,1641,1),"/player")
+		go.set_position(vmath.vector3(18466,1641,1),"/king")
+		timer.delay(3,false,function()
+			king_pos_check = 0
+			msg.post("/fight", "king_fight")
+			enemy = "King"
+			go.set_position(camera_pos["King"], "/backend")
+			msg.post("/projectile_spawner#projectile_spawner","king_idle")
+			fight = true
+			king_guards = {}
+			for i=1,4 do
+				id = factory.create("#enemy", king_pos[i], nil, {king = true,king_num=i})
+				king_guards[i] = id
+			end
+		end)
 	end
 end

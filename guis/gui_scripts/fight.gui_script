@@ -39,10 +39,34 @@ function on_message(self, message_id, message, sender)
 		flicker_loop = 0
 		flicker_enabled = false
 		timer.delay(0.2, true, flicker)
-
-	--Disable Fight
+	elseif message_id == hash("king_fight") then
+		king_2_check = 0
+		king_pos_check = 1
+		gui.set_enabled(gui.get_node("talk"), false)
+		gui.set_enabled(gui.get_node("item"), false)
+		msg.post("/printer#printer_example","disable")
+		sound.pause("/sounds#"..level,true)
+		enemy_type = "King"
+		gui.set_text(gui.get_node("act_text_2"), text[text_2[enemy_type]])
+		gui.set_text(gui.get_node("act_text_3"), text[text_3[enemy_type]])
+		gui.set_text(gui.get_node("armor_text"), "Armor:\n"..armor)
+		for i, v in ipairs(inventory) do
+			gui.set_text(gui.get_node("item_text_"..i),v)
+		end
+		current_button = "item"
+		fight = true
+		x= 320
+		y= 180
+		loop = 0
+		sound.play("/sounds#king_theme")
+		msg.post("/printer#printer_example", "printtext", {line = approach[enemy_type], battle = false})
+		camera.deadzone(camera_id, 0, 0, 0, 0)
+		gui.set_scale(gui.get_node("box"),vmath.vector3(0.7,0.7,0))
+		gui.set_position(gui.get_node("bottom"), vmath.vector3(0,-380,0))
+		camera.set_zoom(camera_id, camera_zoom[enemy_type])
+		camera.follow(camera_id, "/backend", {offset = vmath.vector3(0,0,0)})
+		--Disable Fight
 	elseif message_id == hash("disable_fight") then
-		
 		if fight then
 			msg.post("/printer#printer_example","disable")
 			gui.animate(gui.get_node("box"),"scale",vmath.vector3(1,1,1),gui.EASING_LINEAR, 0.4)
@@ -59,8 +83,10 @@ function on_message(self, message_id, message, sender)
 	-- Broadcast final fight messages
 	elseif message_id == hash("end_fight_final") then
 		msg.post("#", "disable_fight")
-		msg.post("/instance" .. enemy-1 , "disable")
-		enemy_disabled[enemy_type] = true
+		if enemy ~= "King" then
+			msg.post("/instance" .. enemy-1 , "disable")
+			enemy_disabled[enemy_type] = true
+		end
 	
 	-- Show menu when attack is over
 	elseif message_id == hash("attack_over") then
@@ -267,28 +293,49 @@ function on_input(self, action_id, action)
 
 				if current_button == "act_text_2" then
 					sound.play("/sounds#select")
-					if type(text_2_options[enemy_type]) == "table" and spare_order[enemy_type] == 2 then
-						msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type][2]})
-					elseif type(text_2_options[enemy_type]) == "table" and not text_2_check[enemy_type] then
-						msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][1]})
-						if spare_order[enemy_type][#spare_order[enemy_type]] == 3 then
-							print(1)
-							spare_order[enemy_type] = 3
-							text_2_check[enemy_type] = true
+					if enemy ~= "King" then
+						if type(text_2_options[enemy_type]) == "table" and spare_order[enemy_type] == 2 then
+							msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type][2]})
+						elseif type(text_2_options[enemy_type]) == "table" and not text_2_check[enemy_type] then
+							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][1]})
+							if spare_order[enemy_type][#spare_order[enemy_type]] == 3 then
+								spare_order[enemy_type] = 3
+								text_2_check[enemy_type] = true
+							else
+								text_2_check[enemy_type] = true
+							end
+						elseif type(text_2_options[enemy_type]) == "table" then
+							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][2]})
 						else
-							print(2)
-							text_2_check[enemy_type] = true
-						end
-					elseif type(text_2_options[enemy_type]) == "table" then
-						msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][2]})
-					else
-						if spare_text[enemy_type] == 2 then
-							msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type]})
+							if spare_text[enemy_type] == 2 then
+								msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type]})
 
-						else
-							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type]})
+							else
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type]})
+							end
 						end
-					end
+					else
+						
+						if king_2_check == king_pos_check then
+							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][5]})
+						elseif king_2_check == king_pos_check-1 then
+							if king_2_check == 0 then
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][1]})
+								king_2_check = king_2_check+1
+							elseif king_2_check == 2 then
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][2]})
+								king_2_check = king_2_check+1
+							elseif king_2_check == 4 then
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][3]})
+								king_2_check = king_2_check+1
+							elseif king_2_check == 6 then
+								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][4]})
+								king_2_check = king_2_check+1
+							elseif king_2_check == 8 then
+								msg.post("/printer#printer_example", "printtext_final", {line = text_2_options[enemy_type][5]})							
+							end
+						end	
+					end	
 				end
 
 				if current_button == "act_text_3" then
@@ -298,11 +345,9 @@ function on_input(self, action_id, action)
 					elseif type(text_3_options[enemy_type]) == "table" and not text_3_check[enemy_type] then
 						msg.post("/printer#printer_example", "printtext", {line = text_3_options[enemy_type][1]})
 						if spare_order[enemy_type][#spare_order[enemy_type]] == 2 then
-							print(3)
 							spare_order[enemy_type] = 2
 							text_2_check[enemy_type] = true
 						elseif not spare_order[enemy_type][#spare_order[enemy_type]] == 2 then
-							print(4)
 							text_3_check[enemy_type] = true
 						end
 					elseif type(text_3_options[enemy_type]) == "table" then

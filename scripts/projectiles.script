@@ -4,6 +4,7 @@ go.property("spare", false)
 go.property("opposite", false)
 go.property("speed", 400)
 go.property("rotation",0)
+go.property("king",false)
 function on_message(self, message_id, message, sender)
 
     -- Set ID and start moving
@@ -60,13 +61,16 @@ function on_message(self, message_id, message, sender)
         go.delete()
     elseif message.other_group == hash("wall") then
         go.delete()
+    elseif message_id == hash("rotation") then
+        sprite.play_flipbook("#projectile", "king_projectile")
+        go.set(".","euler.z",self.rotation)
     end
 end
 
 function final(self)
 
     --Lower HP
-    if self.hit then
+    if not self.king and self.hit then
         
         -- Check spare
         if self.spare then
@@ -75,11 +79,13 @@ function final(self)
         else
             HP=HP-(math.floor((attack[self.id])-(defense/(attack[self.id]))))
         end
+    elseif self.hit then
+        HP=HP-(math.floor((25)-(defense/(25))))
     end
 end
 
 function update(self,dt)
-    if self.rotation ~= 0 then
+    if fire_direction[self.id] == "Spiral" or fire_direction[self.id] == "Circle" or self.king then
         local rotation = go.get_rotation()
 
         local distance = 200 * dt

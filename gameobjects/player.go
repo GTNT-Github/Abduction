@@ -25,6 +25,7 @@ embedded_components {
   "mask: \"wall\"\n"
   "mask: \"projectile\"\n"
   "mask: \"CellEnd\"\n"
+  "mask: \"desks\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
