@@ -51,6 +51,8 @@ function on_message(self, message_id, message, sender)
                 end
             end)
         end
+    elseif message_id == hash("end_idle") then
+        timer.cancel(king_timer)
     elseif message_id == hash("king_attack") then
         if king_timer ~= nil then
             timer.cancel(king_timer)

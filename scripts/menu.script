@@ -24,6 +24,11 @@ function on_message(self, message_id, message, sender)
         msg.post("#Cell", "final")
         msg.post("#Cell", "unload")
         msg.post("#death", "load")
+    elseif message_id == hash("credits") then
+        msg.post("#Cell", "disable")
+        msg.post("#Cell", "final")
+        msg.post("#Cell", "unload")
+        msg.post("#credits", "load")
 
         -- Load Cell and disable death
     elseif message_id == hash("begin_game") then

@@ -77,7 +77,10 @@ function on_message(self, message_id, message, sender)
 			msg.post("/printer", "remove_text")
 			msg.post("/backend", "camera_fight_end")
 			timer.delay(0.4, false, function() fight = false act = false end)
-			sound.pause("/sounds#"..level,false)
+			if enemy ~= "King" then
+				sound.pause("/sounds#"..level,false)
+			end
+			enemy = nil
 		end
 
 	-- Broadcast final fight messages
@@ -86,6 +89,9 @@ function on_message(self, message_id, message, sender)
 		if enemy ~= "King" then
 			msg.post("/instance" .. enemy-1 , "disable")
 			enemy_disabled[enemy_type] = true
+		else
+			msg.post("/king","fight_disable")
+			sound.stop("/sounds#king_theme")
 		end
 	
 	-- Show menu when attack is over
@@ -315,9 +321,8 @@ function on_input(self, action_id, action)
 							end
 						end
 					else
-						
 						if king_2_check == king_pos_check then
-							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][5]})
+							msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][6]})
 						elseif king_2_check == king_pos_check-1 then
 							if king_2_check == 0 then
 								msg.post("/printer#printer_example", "printtext", {line = text_2_options[enemy_type][1]})

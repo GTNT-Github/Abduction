@@ -15,9 +15,10 @@ return {
 
 	slow_appear = {
 		speed = 1,
-		color = "#FFFFFF",
 	},
-
+	slightly_faster = {
+		speed = 0.2
+	},
 	fast_appear = {
 		speed = 0.2,
 		color = "#8b0000",
@@ -29,5 +30,18 @@ return {
 		sound = "text_emphasis",
 		color = "#8b0000",
 		shake_on_write = 10
+	},
+	red = {
+		color = "#8b0000",
+	},
+	cannot_skip_faster = {
+		can_skip = false,
+	},
+	cannot_skip_slower = {
+		can_skip = false,
+		speed = 1,
+	},
+	cannot_skip = {
+		can_skip = false
 	}
 }

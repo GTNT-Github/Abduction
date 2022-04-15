@@ -42,8 +42,8 @@ nodes {
   }
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
-  text: "u ded noob\n"
-  ""
+  text: "You Died!\n"
+  "Press space to restart"
   font: "8-bit_font"
   id: "text"
   xanchor: XANCHOR_NONE

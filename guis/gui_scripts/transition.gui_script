@@ -5,7 +5,11 @@ end
 function on_message(self, message_id, message, sender)
     if message_id == hash("cell_transition") then
         transition = true
-
+		temp_inventory2 = {"-----","-----","-----","-----","-----"} 
+        inventory = {"-----","-----","-----","-----","-----"} 
+        temp_armor = "-----"
+		-- temp_position = vmath.vector3(270,1430,1)
+        temp_position = vmath.vector3(13371,1208,1)
         msg.post("#","enable")
         sound.play("/sounds#transition")
         gui.set_text(gui.get_node("text"),"Part 1\nThe Cells")
@@ -20,6 +24,10 @@ function on_message(self, message_id, message, sender)
         sound.stop("/sounds#"..level)
         sound.play("/sounds#transition")
         gui.set_text(gui.get_node("text"),"Part 2\nThe Docking Bay")
+        temp_armor = armor
+        for i,v in pairs(inventory) do
+            temp_inventory2[i] = v      
+        end
         timer.delay(3,false,function()
             msg.post("#","disable")
             transition = false
@@ -30,6 +38,11 @@ function on_message(self, message_id, message, sender)
         msg.post("#","enable")
         sound.stop("/sounds#"..level)
         sound.play("/sounds#transition")
+        for i,v in pairs(inventory) do
+            temp_inventory2[i] = v      
+        end
+        temp_armor = armor
+		temp_position = vmath.vector3(16522,1641,1)
         gui.set_text(gui.get_node("text"),"Part 3\nThe Bridge")
         timer.delay(3,false,function()
             msg.post("#","disable")

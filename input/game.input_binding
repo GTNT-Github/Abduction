@@ -39,7 +39,7 @@ key_trigger {
   action: "select_up"
 }
 key_trigger {
-  input: KEY_ESC
+  input: KEY_BACKSPACE
   action: "esc"
 }
 key_trigger {

@@ -36,7 +36,7 @@ use_fixed_timestep = 0
 show_made_with_defold = 0
 show_console_banner = 0
 scale_mode = fit
-splash_image = /assets/tilemap/DockingBay/DockingBay.png
+splash_image = /assets/misc/Icon.png
 
 [sprite]
 max_count = 100000

@@ -1,7 +1,7 @@
 function tables()
     -- Fight Enemy
     approach = {["Guard1"] = 2,["Guard2"] = 12,["Guard3"] = 22,["Guard4"] = 47,["King"] = 70}
-    attack = {["Guard1"] = 10,["Guard2"] = 15,["Guard3"] = 20,["Guard4"] = 20,["King"] = 25}
+    attack = {["Guard1"] = 10,["Guard2"] = 15,["Guard3"] = 20,["Guard4"] = 20,["King"] = 15}
     stats = {["Guard1"] = 3,["Guard2"] = 13,["Guard3"] = 23,["Guard4"] = 48,["King"] = 71}
     text_2 = {["Guard1"] = 4,["Guard2"] = 14,["Guard3"] = 24,["Guard4"] = 49,["King"] = 72}
     text_2_options = {["Guard1"] = math.random(5,6),["Guard2"] = math.random(15,16),["Guard3"] = math.random(25,26),["Guard4"] = {50,51},["King"] = {73,74,75,76,77,78}}
@@ -37,11 +37,11 @@ camera_zoom = {["Guard1"] = 0.7,["Guard2"] = 0.6,["Guard3"] = 0.6,["Guard4"] = 0
 collisions = {["Guard1"] = "/Guard1",["Guard2"] = "/Guard2",["Guard3"] = "/Guard3",["Guard4"] = "/Guard4"}
 locks = {["Red Keycard"] = "/redlock",["Blue Keycard"] = "/bluelock",["Green Keycard"] = "/greenlock"}
 --Items
-item_type = {["shield"] = "Defense",["heal_potion"] = "Heal",["BlueKeycard"] = "Keycard",["RedKeycard"] = "Keycard"}
-item_collision = {["shield"] = "/shield",["heal_potion"] = "/heal_potion",["BlueKeycard"] = "/BlueKeycard",["RedKeycard"] = "/RedKeycard",["GreenKeycard"] = "/GreenKeycard"}
-item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion",["BlueKeycard"] = "Blue Keycard",["RedKeycard"] = "Red Keycard",["GreenKeycard"] = "Green Keycard"}
-item_stats = {["shield"] = 10,["heal_potion"] = 10}
-item_text = {["shield"] = 35,["heal_potion"] = 38}
-item_pickup = {["shield"] = 34,["heal_potion"] = 37,["BlueKeycard"] = 40,["RedKeycard"] = 43,["GreenKeycard"] = 45}
-item_enabled = {["shield"] = true,["heal_potion"] = true,["BlueKeycard"] = false,["RedKeycard"] = false,["GreenKeycard"] = false}
+item_type = {["shield"] = "Defense",["heal_potion"] = "Heal",["BlueKeycard"] = "Keycard",["RedKeycard"] = "Keycard",["blue_heal"] = "Heal"}
+item_collision = {["shield"] = "/shield",["heal_potion"] = "/heal_potion",["BlueKeycard"] = "/BlueKeycard",["RedKeycard"] = "/RedKeycard",["GreenKeycard"] = "/GreenKeycard",["blue_heal"]= "/blue_heal"}
+item_name = {["shield"] = "Shield",["heal_potion"] = "Health Potion",["BlueKeycard"] = "Blue Keycard",["RedKeycard"] = "Red Keycard",["GreenKeycard"] = "Green Keycard",["blue_heal"] = "Blue Heal Potion"}
+item_stats = {["shield"] = 10,["heal_potion"] = 10,["blue_heal"] = 30}
+item_text = {["shield"] = 35,["heal_potion"] = 38,["blue_heal"] = 96}
+item_pickup = {["shield"] = 34,["heal_potion"] = 37,["BlueKeycard"] = 40,["RedKeycard"] = 43,["GreenKeycard"] = 45,["blue_heal"] = 95}
+item_enabled = {["shield"] = true,["heal_potion"] = true,["BlueKeycard"] = false,["RedKeycard"] = false,["GreenKeycard"] = false,["blue_heal"] = true}
 finish_item = {["Guard1"] = "BlueKeycard",["Guard2"] = "RedKeycard",["Guard3"] = "GreenKeycard",}

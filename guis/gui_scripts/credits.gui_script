@@ -1,0 +1,53 @@
+function init(self)
+    local left = gui.get_node("left")
+    local right = gui.get_node("right")
+    local box = gui.get_node("box1")
+    local count = 0
+    gui.set_enabled(box,false)
+    -- gui.animate(gui.get_node("box"), "color.w", 1, gui.EASING_LINEAR, 3)
+    sound.play("#transition")
+
+    timer.delay(3.744,true,function()
+        if count == 0 then
+            gui.set_enabled(box,true)
+            gui.set_text(left,"Coding")
+            gui.set_text(right,"Graeme\nBurtis")
+            gui.set_color(gui.get_node("box"),vmath.vector4(1,1,1,1))
+            -- gui.animate(box, "color.w", 0, gui.EASING_LINEAR, 0.5,0,function()
+            --     gui.animate(box, "color.w", 1, gui.EASING_LINEAR, 0.5)
+            -- end)
+
+            count = count+1
+        elseif count == 1 then
+            -- gui.animate(box, "color.w", 0, gui.EASING_LINEAR, 0.5,0,function()
+                gui.set_text(left,"Art\n&\nMusic")
+                gui.set_text(right,"Connor\nHeidenreich")
+                count = count+1
+            --     gui.animate(box, "color.w", 1, gui.EASING_LINEAR, 0.5)
+            -- end)
+        elseif count == 2 then
+            -- gui.animate(box, "color.w", 0, gui.EASING_LINEAR, 0.5,0,function()
+                gui.set_text(left,"Game\nEngine")
+                gui.set_text(right,"Defold")
+                count = count+1
+            --     gui.animate(box, "color.w", 1, gui.EASING_LINEAR, 0.5)
+            -- end)
+        elseif count == 3 then
+            -- gui.animate(box, "color.w", 0, gui.EASING_LINEAR, 0.5,0,function()
+                gui.set_text(left,"Special\nThanks")
+                gui.set_text(right,"Mrs. Panus\nOur Parents\nStack Overflow")
+                count = count+1
+            --     gui.animate(box, "color.w", 1, gui.EASING_LINEAR, 0.5)
+            -- end)
+        elseif count == 4 then
+            -- gui.animate(box, "color.w", 0, gui.EASING_LINEAR, 0.5,0,function()
+                gui.set_text(left,"")
+                gui.set_text(right,"")
+                gui.play_flipbook(gui.get_node("box"), "credits_image")
+                count = count+1
+            --     gui.animate(box, "color.w", 1, gui.EASING_LINEAR, 0.5)
+            -- end)
+            
+        end
+    end)
+end

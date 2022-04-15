@@ -69,6 +69,8 @@ function on_input(self, action_id, action)
 						confrontation = false
 						msg.post("/backend#backend","bridge_transition")
 						msg.post("/transition#transition","bridge_transition")
+					elseif king_spare then
+						msg.post("/king","spare_over")
 					end
 					fight_printer:clear()
 					msg.post("#","disable")
@@ -83,8 +85,17 @@ function on_input(self, action_id, action)
 					fight_printer:print(text[index[count]])
 				end
 			else
-				fight_printer:clear()
-				msg.post("#","disable")
+				if not credits then
+					fight_printer:clear()
+					msg.post("#","disable")
+				end
+			end
+			if credits then
+				sound.stop("/sounds#"..level)
+				sound.play("/sounds#credits_transition")
+				gui.animate(gui.get_node("box"), "color.w", 1, gui.EASING_LINEAR, 2.7, 0, function()
+					msg.post("menu:/menu", "credits")
+				end)
 			end
 			if text_check then
 				text_check = false
@@ -104,7 +115,6 @@ end
 
 
 function on_message(self, message_id, message, sender)
-
 	-- Print Message
 	if message_id == hash("printtext") then
 		fight_printer:print(text[message.line])

@@ -3,13 +3,16 @@ go.property("touching_item", false)
 go.property("touching_lock", false)
 go.property("total_locks",0)
 go.property("slot",0)
+go.property("touching_sign",false)
 touched_item = ""
 touched_lock = ""
+touched_sign = ""
 
 function init(self)
 	-- Acquire Input Focus
 	msg.post(".", "acquire_input_focus")
-
+	go.set_position(temp_position)
+	armor = temp_armor
 	-- Start Variable
 	self.dir = vmath.vector3()
 	self.correction = vmath.vector3()
@@ -64,7 +67,7 @@ function update(self, dt)
 
 	-- Fleeing
 	if screen_pos.x < 190 or screen_pos.x > 1100 or screen_pos.y < 200 or screen_pos.y > 600 then
-		if fight and enemy ~= "King" then
+		if fight and enemy ~= "King" and enemy ~= nil then
 			if can_flee == enemy_num[enemy-1] then
 				msg.post("/fight", "disable_fight")
 			else
@@ -77,15 +80,15 @@ end
 
 function on_input(self, action_id, action)
 	-- Input detection
-	if action_id == hash("down") and not confrontation and not transition then
+	if action_id == hash("down") and not confrontation and not transition and not king_spare and not credits then
 		self.dir.y = -1
-	elseif action_id == hash("up") and not confrontation and not transition then
+	elseif action_id == hash("up") and not confrontation and not transition and not king_spare and not credits then
 		self.dir.y = 1
 		
-	elseif action_id == hash("left") and not confrontation and not transition then
+	elseif action_id == hash("left") and not confrontation and not transition and not king_spare and not credits then
 		self.dir.x = -1
 		
-	elseif action_id == hash("right") and not confrontation and not transition then
+	elseif action_id == hash("right") and not confrontation and not transition and not king_spare and not credits then
 		self.dir.x = 1
 	elseif action_id == hash("pick_up") and action.pressed then
 
@@ -131,6 +134,15 @@ function on_input(self, action_id, action)
 			else
 				sound.play("/sounds#lock_enter")
 			end
+		elseif self.touching_sign then
+			if touched_sign == 1 then
+				msg.post("/printer#printer_example", "printtext", {line = 97,battle=false})
+			elseif touched_sign == 2 then
+				msg.post("/printer#printer_example", "printtext", {line = 98,battle=false})
+			elseif touched_sign == 3 then
+				msg.post("/printer#printer_example", "printtext", {line = 99,battle=false})
+				
+			end
 		end
 	end
 end
@@ -160,11 +172,41 @@ function on_message(self, message_id, message, sender)
 		if id == hash("/CellEnd") and not confrontation and message.enter then
 			msg.post("/transition#transition","docking_bay_transition")
 			go.set_position(vmath.vector3(10105,1383,1))
+			temp_position = go.get_position()
 		elseif id == hash("/KingSpawn") and not fight and not confrontation and message.enter then
 			msg.post("/king","king_start")
-		elseif string.find(tostring(id),"KingCheck") then
+		elseif string.find(tostring(id),"KingCheck") and message.enter then
 			king_pos_check = tonumber(string.sub(string.sub(tostring(id),-2),-2,1))
 			king_2_check = king_pos_check-1
+			go.delete(id)
+		elseif id == hash("/Credits") then
+			msg.post("/printer#printer_example", "printtext", {line = 93,battle=false})
+			credits = true
+		elseif string.sub(string.sub(tostring(id),-2),-2,1) == "1" and string.find(tostring(id),"sign") then
+			if message.enter then
+				self.touching_sign = true
+				touched_sign = 1
+			else
+				self.touching_sign = nil
+				touched_sign = nil
+			end
+		elseif string.sub(string.sub(tostring(id),-2),-2,1) == "2" and string.find(tostring(id),"sign") then
+			if message.enter then
+				self.touching_sign = true
+				touched_sign = 2
+			else
+				self.touching_sign = nil
+				touched_sign = nil
+			end
+		elseif string.sub(string.sub(tostring(id),-2),-2,1) == "3" and string.find(tostring(id),"sign") then
+			if message.enter then
+				self.touching_sign = true
+				touched_sign = 3
+			else
+				self.touching_sign = nil
+				touched_sign = nil
+			end
+		
 		end
 		for i, v in pairs(collisions) do
 			if id == hash(collisions[i]) then
@@ -200,7 +242,6 @@ function on_message(self, message_id, message, sender)
 		end
 	end
 end
-
 -- Check of object exists
 function does_object_exist(id)
     return pcall(function(id) go.get_position(id) end, id) == true

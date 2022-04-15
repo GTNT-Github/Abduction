@@ -80,7 +80,7 @@ function final(self)
             HP=HP-(math.floor((attack[self.id])-(defense/(attack[self.id]))))
         end
     elseif self.hit then
-        HP=HP-(math.floor((25)-(defense/(25))))
+        HP=HP-(math.floor((15)-(defense/(15))))
     end
 end
 
