@@ -9,6 +9,7 @@ touched_lock = ""
 touched_sign = ""
 
 function init(self)
+	print(0)
 	-- Acquire Input Focus
 	msg.post(".", "acquire_input_focus")
 	go.set_position(temp_position)
@@ -135,7 +136,9 @@ function on_input(self, action_id, action)
 				sound.play("/sounds#lock_enter")
 			end
 		elseif self.touching_sign then
+			print(3)
 			if touched_sign == 1 then
+				print(4)
 				msg.post("/printer#printer_example", "printtext", {line = 97,battle=false})
 			elseif touched_sign == 2 then
 				msg.post("/printer#printer_example", "printtext", {line = 98,battle=false})
@@ -168,6 +171,7 @@ function on_message(self, message_id, message, sender)
 		-- Check for guard
 
 	elseif message_id == hash("trigger_response") then
+		print(1)
 		local id = msg.url(message.other_id).path
 		if id == hash("/CellEnd") and not confrontation and message.enter then
 			msg.post("/transition#transition","docking_bay_transition")
@@ -183,6 +187,7 @@ function on_message(self, message_id, message, sender)
 			msg.post("/printer#printer_example", "printtext", {line = 93,battle=false})
 			credits = true
 		elseif string.sub(string.sub(tostring(id),-2),-2,1) == "1" and string.find(tostring(id),"sign") then
+			print(2)
 			if message.enter then
 				self.touching_sign = true
 				touched_sign = 1

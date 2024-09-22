@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/lock_enter.wav-81b11830ede9c769e51f948a9a232ee4.sample"
+
+[deps]
+
+source_file="res://assets/sound/wav_files/lock_enter.wav"
+dest_files=[ "res://.import/lock_enter.wav-81b11830ede9c769e51f948a9a232ee4.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

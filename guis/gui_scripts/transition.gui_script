@@ -8,8 +8,8 @@ function on_message(self, message_id, message, sender)
 		temp_inventory2 = {"-----","-----","-----","-----","-----"} 
         inventory = {"-----","-----","-----","-----","-----"} 
         temp_armor = "-----"
-		-- temp_position = vmath.vector3(270,1430,1)
-        temp_position = vmath.vector3(13371,1208,1)
+		temp_position = vmath.vector3(270,1430,1)
+        -- temp_position = vmath.vector3(13371,1208,1)
         msg.post("#","enable")
         sound.play("/sounds#transition")
         gui.set_text(gui.get_node("text"),"Part 1\nThe Cells")

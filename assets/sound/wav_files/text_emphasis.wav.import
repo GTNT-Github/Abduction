@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/text_emphasis.wav-6e0c2dda114ee7a7d770acb9d9ba2703.sample"
+
+[deps]
+
+source_file="res://assets/sound/wav_files/text_emphasis.wav"
+dest_files=[ "res://.import/text_emphasis.wav-6e0c2dda114ee7a7d770acb9d9ba2703.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

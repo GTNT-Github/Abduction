@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/king_confrontation.wav-d0d9df66902a0b08c81390ce32774a6b.sample"
+
+[deps]
+
+source_file="res://assets/music/king_confrontation.wav"
+dest_files=[ "res://.import/king_confrontation.wav-d0d9df66902a0b08c81390ce32774a6b.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
